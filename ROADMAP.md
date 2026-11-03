@@ -8,10 +8,10 @@
 - [x] Document architecture and development commands.
 
 ## v0.2 — Reliable task lifecycle
-- [ ] Add structured task IDs, statuses, timestamps, and results.
-- [ ] Add execution events and structured logging.
-- [ ] Add context-aware timeouts and bounded retry policy.
-- [ ] Add tests for cancellation and tool failures.
+- [x] Add structured task IDs, statuses, timestamps, and results.
+- [x] Add execution events and structured logging.
+- [x] Add context-aware timeouts and bounded, opt-in retry policy.
+- [x] Add tests for failures, cancellation, timeout, and retry behavior.
 
 ## v0.3 — Model and tool integration
 - [ ] Define an LLM provider interface independent of any vendor.
@@ -29,7 +29,7 @@
 - [ ] Add evaluation fixtures and repeatable agent benchmarks.
 - [ ] Add background workers only when asynchronous workloads justify them.
 
-## Non-goals for the initial milestone
+## Non-goals for the initial milestones
 - No web dashboard.
 - No multi-agent framework before single-agent execution is reliable.
 - No mandatory database, queue, or hosted model dependency.
