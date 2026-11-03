@@ -10,7 +10,7 @@ A Go-based foundation for reliable AI-agent execution, tool calling, and workflo
 - Structured task records, lifecycle events, cancellation, timeouts, and bounded opt-in retries.
 - A vendor-independent model provider interface.
 - An OpenAI Responses API provider using Go's standard HTTP client.
-- JSON Schema validation for model-supplied tool arguments.
+- JSON Schema validation for model-supplied tool arguments and tool outputs.
 - Explicit default-deny tool permissions.
 - A local echo tool, unit tests, Go vet, and GitHub Actions CI.
 
@@ -62,7 +62,7 @@ Go owns orchestration and tool execution. Provider-specific code is isolated beh
 ## Safety boundaries
 
 - Tool permissions use an explicit allow-list; a nil policy denies all calls.
-- Tool arguments are validated before execution against a supported JSON Schema subset.
+- Tool arguments are validated before execution and tool outputs are validated before being returned to the model, using a supported JSON Schema subset.
 - Unknown tools and invalid arguments are rejected.
 - The model can request tools, but it cannot register new tools or grant itself permissions.
 - API keys are read from environment variables and must not be committed.
