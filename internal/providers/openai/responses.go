@@ -35,6 +35,7 @@ type requestBody struct {
 	Input []json.RawMessage `json:"input"`
 	Tools []functionTool   `json:"tools,omitempty"`
 	ToolChoice string      `json:"tool_choice,omitempty"`
+	Store bool `json:"store"`
 }
 
 type functionTool struct {
@@ -49,6 +50,7 @@ type responseBody struct {
 	Error *struct {
 		Message string `json:"message"`
 	} `json:"error"`
+	Status string `json:"status"`
 	Output []struct {
 		Type      string `json:"type"`
 		Role      string `json:"role"`
@@ -101,7 +103,7 @@ func (p *Provider) Generate(ctx context.Context, request agent.ModelRequest) (ag
 		}
 		input = append(input, item)
 	}
-	body := requestBody{Model: request.Model, Input: input}
+	body := requestBody{Model: request.Model, Input: input, Store: false}
 	if len(request.Tools) > 0 {
 		body.ToolChoice = "auto"
 		for _, spec := range request.Tools {
@@ -142,6 +144,9 @@ func (p *Provider) Generate(ctx context.Context, request agent.ModelRequest) (ag
 			return agent.ModelResponse{}, fmt.Errorf("OpenAI API error (HTTP %d): %s", httpResponse.StatusCode, decoded.Error.Message)
 		}
 		return agent.ModelResponse{}, fmt.Errorf("OpenAI API returned HTTP %d", httpResponse.StatusCode)
+	}
+	if decoded.Status != "" && decoded.Status != "completed" {
+		return agent.ModelResponse{}, fmt.Errorf("OpenAI response did not complete (status %s)", decoded.Status)
 	}
 	result := agent.ModelResponse{}
 	for _, item := range decoded.Output {
