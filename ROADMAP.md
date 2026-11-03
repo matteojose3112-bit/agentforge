@@ -19,7 +19,17 @@
 - [x] Add JSON Schema validation for tool inputs and outputs.
 - [x] Add explicit default-deny tool permission boundaries.
 - [x] Add bounded model/tool turns and provider adapter tests.
+- [x] Publish a step-by-step local and model-backed demo guide.
+- [x] Document contribution and development expectations.
 - [ ] Run a live API smoke test after a local API key is configured.
+
+## Release acceptance checklist
+- [x] Local no-key path documented.
+- [x] Model-backed happy path documented.
+- [x] Default-deny permission behavior documented.
+- [x] CI workflow runs tests, vet, and CLI build.
+- [ ] Confirm the live model/tool cycle with a locally configured API key.
+- [ ] Record the live smoke-test result and tag the first release candidate.
 
 ## v0.4 — Persistence and human control
 - [ ] Define a storage interface for task state and memory.
