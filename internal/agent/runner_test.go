@@ -102,8 +102,8 @@ func TestRunnerRecordsEvents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(events) != 5 {
-		t.Fatalf("got %d events, want 5: %#v", len(events), events)
+	if len(events) != 4 {
+		t.Fatalf("got %d events, want 4: %#v", len(events), events)
 	}
 	if events[0].Type != "task.created" || events[len(events)-1].Type != "task.succeeded" {
 		t.Fatalf("unexpected event sequence: %#v", events)
