@@ -5,12 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/matteojose3112-bit/agentforge/internal/agent"
 	"github.com/matteojose3112-bit/agentforge/internal/tools"
 )
 
-const version = "0.1.0"
+const version = "0.2.0"
 
 func main() {
 	if err := run(os.Args[1:], os.Stdout); err != nil {
@@ -25,6 +26,7 @@ func run(args []string, out *os.File) error {
 	showVersion := flags.Bool("version", false, "print version")
 	toolName := flags.String("tool", "echo", "registered tool to execute")
 	input := flags.String("input", "", "task input")
+	timeout := flags.Duration("timeout", 0, "execution timeout (for example 30s)")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
@@ -35,7 +37,7 @@ func run(args []string, out *os.File) error {
 	if *input == "" {
 		return fmt.Errorf("missing -input; try: agentforge -tool echo -input 'hello'")
 	}
-	runner, err := agent.NewRunner(tools.Echo{})
+	runner, err := agent.NewRunnerWithOptions(agent.Options{Timeout: *timeout}, tools.Echo{})
 	if err != nil {
 		return err
 	}
@@ -46,3 +48,5 @@ func run(args []string, out *os.File) error {
 	_, err = fmt.Fprintln(out, result.Output)
 	return err
 }
+
+var _ = time.Second
