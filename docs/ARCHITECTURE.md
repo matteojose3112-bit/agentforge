@@ -13,7 +13,7 @@ AgentForge is a single Go process with explicitly registered capabilities.
 
 The `agent.Provider` interface accepts a provider-neutral model request and returns text or tool calls. OpenAI-specific HTTP payloads and response parsing remain inside the OpenAI adapter. A second provider can implement the same interface without changing the agent loop.
 
-The first adapter uses the Responses API over the standard library HTTP client. API credentials are passed through `OPENAI_API_KEY`, never source-controlled. Provider tests use a local HTTP test server; CI does not call a paid API.
+The first adapter uses the Responses API over the standard library HTTP client. API credentials are passed through `OPENAI_API_KEY`, never source-controlled. Provider tests use a local HTTP test server; CI does not call a paid API. Requests set `store:false` and do not rely on server-side conversation persistence.
 
 ## Tool contracts and validation
 
