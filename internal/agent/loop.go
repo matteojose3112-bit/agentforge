@@ -49,7 +49,10 @@ func NewAgent(provider Provider, model string, policy PermissionPolicy, maxTurns
 			return nil, fmt.Errorf("tool %q is already registered", spec.Name)
 		}
 		if err := validateSchemaDefinition(spec.Parameters); err != nil {
-			return nil, fmt.Errorf("tool %q schema: %w", spec.Name, err)
+			return nil, fmt.Errorf("tool %q input schema: %w", spec.Name, err)
+		}
+		if err := validateSchemaDefinition(spec.OutputSchema); err != nil {
+			return nil, fmt.Errorf("tool %q output schema: %w", spec.Name, err)
 		}
 		agent.tools[spec.Name] = tool
 		agent.specs[spec.Name] = spec
@@ -97,9 +100,15 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 			if err := ValidateJSON(spec.Parameters, call.Arguments); err != nil {
 				return "", fmt.Errorf("invalid arguments for tool %q: %w", call.Name, err)
 			}
+			if err := ctx.Err(); err != nil {
+				return "", err
+			}
 			output, err := tool.Execute(ctx, string(call.Arguments))
 			if err != nil {
 				return "", fmt.Errorf("execute tool %q: %w", call.Name, err)
+			}
+			if err := ValidateJSON(spec.OutputSchema, []byte(output)); err != nil {
+				return "", fmt.Errorf("tool %q returned invalid output: %w", call.Name, err)
 			}
 			messages = append(messages, Message{Role: "tool", ToolCallID: call.ID, Name: call.Name, Content: output})
 		}
