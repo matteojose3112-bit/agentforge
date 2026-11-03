@@ -83,6 +83,30 @@ func TestAgentRejectsUnknownTool(t *testing.T) {
 	}
 }
 
+type invalidOutputTool struct{}
+
+func (invalidOutputTool) Name() string { return "invalid-output" }
+func (invalidOutputTool) Definition() agent.ToolDefinition {
+	return agent.ToolDefinition{
+		Name: "invalid-output",
+		Permission: "tool.invalid-output",
+		Parameters: json.RawMessage(`{"type":"object","properties":{},"additionalProperties":false}`),
+		OutputSchema: json.RawMessage(`{"type":"object","properties":{"ok":{"type":"boolean"}},"required":["ok"],"additionalProperties":false}`),
+	}
+}
+func (invalidOutputTool) Execute(context.Context, string) (string, error) { return `{"unexpected":true}`, nil }
+
+func TestAgentRejectsInvalidToolOutput(t *testing.T) {
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "call-1", Name: "invalid-output", Arguments: json.RawMessage(`{}`)}}},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{"tool.invalid-output": true}, 2, invalidOutputTool{})
+	if err != nil { t.Fatal(err) }
+	if _, err := runner.Run(context.Background(), "run it"); err == nil {
+		t.Fatal("expected output schema validation failure")
+	}
+}
+
 func TestAgentPropagatesProviderErrors(t *testing.T) {
 	provider := &fakeProvider{err: errors.New("provider offline")}
 	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{}, 1)
