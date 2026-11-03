@@ -19,6 +19,7 @@ func (AgentEcho) Definition() agent.ToolDefinition {
 		Description: "Return the supplied text unchanged.",
 		Permission: "tool.echo",
 		Parameters: json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":false}`),
+		OutputSchema: json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":false}`),
 	}
 }
 
@@ -32,5 +33,9 @@ func (AgentEcho) Execute(_ context.Context, input string) (string, error) {
 	if args.Text == "" {
 		return "", errors.New("text cannot be empty")
 	}
-	return args.Text, nil
+	output, err := json.Marshal(map[string]string{"text": args.Text})
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
 }
