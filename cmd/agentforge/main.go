@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/matteojose3112-bit/agentforge/internal/agent"
 	"github.com/matteojose3112-bit/agentforge/internal/tools"
@@ -49,4 +48,3 @@ func run(args []string, out *os.File) error {
 	return err
 }
 
-var _ = time.Second
