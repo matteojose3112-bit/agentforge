@@ -6,7 +6,7 @@ All notable changes to AgentForge are documented here.
 - Added vendor-neutral model, message, tool-call, and provider contracts.
 - Added an OpenAI Responses API adapter using the standard library HTTP client.
 - Added a bounded model/tool loop with strict tool registration.
-- Added JSON Schema argument validation and default-deny permission allow-listing.
+- Added JSON Schema validation for tool inputs and outputs, plus default-deny permission allow-listing.
 - Added a JSON-schema-described local echo tool and provider/agent tests.
 - Added CLI agent mode with environment-based API key configuration.
 
