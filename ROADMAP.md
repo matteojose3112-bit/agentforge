@@ -14,10 +14,12 @@
 - [x] Add tests for failures, cancellation, timeout, and retry behavior.
 
 ## v0.3 — Model and tool integration
-- [ ] Define an LLM provider interface independent of any vendor.
-- [ ] Add one provider implementation with configuration via environment variables.
-- [ ] Add schema-validated tool input and output.
-- [ ] Add explicit tool permission boundaries.
+- [x] Define a vendor-independent model provider interface.
+- [x] Add an OpenAI Responses API provider with environment-based credentials.
+- [x] Add JSON Schema validation for model-supplied tool arguments.
+- [x] Add explicit default-deny tool permission boundaries.
+- [x] Add bounded model/tool turns and provider adapter tests.
+- [ ] Run a live API smoke test after a local API key is configured.
 
 ## v0.4 — Persistence and human control
 - [ ] Define a storage interface for task state and memory.
