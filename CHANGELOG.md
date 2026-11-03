@@ -9,6 +9,8 @@ All notable changes to AgentForge are documented here.
 - Added JSON Schema validation for tool inputs and outputs, plus default-deny permission allow-listing.
 - Added a JSON-schema-described local echo tool and provider/agent tests.
 - Added CLI agent mode with environment-based API key configuration.
+- Added a hands-on demo guide and contribution guidelines.
+- Expanded the README with architecture flow, quick start, safety boundaries, and current limitations.
 
 ## [0.2.0] — Reliable task execution
 - Added task IDs, lifecycle statuses, UTC timestamps, structured results, duration, and attempt counts.
