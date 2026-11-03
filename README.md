@@ -2,15 +2,16 @@
 
 A Go-based foundation for reliable AI-agent execution, tool calling, and workflow automation.
 
-> **Status:** v0.2.0 — reliable task execution. This is an execution runtime foundation, not yet an LLM-powered autonomous agent.
+> **Status:** v0.3.0 — model and tool integration. This is an early agent runtime, not a production-ready autonomous system.
 
 ## What works today
 
 - A small Go CLI and an explicit typed tool registry.
-- Structured task records with unique IDs, lifecycle status, UTC timestamps, attempts, output, and errors.
-- Execution events and structured `log/slog` logging.
-- Context cancellation and optional execution timeouts.
-- Bounded retries (maximum five attempts), only for tools that explicitly opt in as retryable.
+- Structured task records, lifecycle events, cancellation, timeouts, and bounded opt-in retries.
+- A vendor-independent model provider interface.
+- An OpenAI Responses API provider using Go's standard HTTP client.
+- JSON Schema validation for model-supplied tool arguments.
+- Explicit default-deny tool permissions.
 - A local echo tool, unit tests, Go vet, and GitHub Actions CI.
 
 ## Quick start
@@ -23,70 +24,58 @@ go vet ./...
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 ```
 
-Expected output:
+## Run a model-backed agent
 
-```text
-hello AgentForge
-```
+The OpenAI integration uses the Responses API. Create an API key in your OpenAI developer account and set it locally; never commit it to the repository.
 
-Set an execution timeout:
+Linux/macOS:
 
 ```bash
-go run ./cmd/agentforge -timeout 30s -tool echo -input "hello"
+export OPENAI_API_KEY="your-api-key"
+go run ./cmd/agentforge -agent -model gpt-6-luna -prompt "Use the echo tool to repeat hello" -allow-permission tool.echo
 ```
 
-Print the current version:
+PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY = "your-api-key"
+go run ./cmd/agentforge -agent -model gpt-6-luna -prompt "Use the echo tool to repeat hello" -allow-permission tool.echo
+```
+
+Tool permissions are denied by default. Grant only the exact permission strings required by the task using `-allow-permission`. The current model mode exposes only the local echo tool. Model API usage may incur charges on the API account.
+
+Direct tool mode remains available:
 
 ```bash
-go run ./cmd/agentforge -version
+go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 ```
 
-Build a binary:
+## Architecture
 
-```bash
-make build
-./bin/agentforge -tool echo -input "hello"
-```
+- `internal/agent`: provider-neutral interfaces, tool loop, schema validation, permissions, and reliable execution.
+- `internal/providers/openai`: OpenAI Responses API adapter.
+- `internal/tools`: local capabilities and JSON-schema-described model tools.
+- `cmd/agentforge`: CLI entry point.
 
-## Task lifecycle and reliability
+Go owns orchestration and tool execution. Provider-specific code is isolated behind `agent.Provider`. The first implementation uses the standard library HTTP client to keep the runtime small.
 
-Each call to `Runner.Run` creates a task record. A task moves through `pending`, `running`, and one terminal state: `succeeded`, `failed`, or `cancelled`. The returned `Result` includes the task ID, timestamps, duration, attempt count, output, and error text.
+## Safety boundaries
 
-The runner emits lifecycle and attempt events through an optional callback and writes structured records with Go's `log/slog`. The runner itself does not persist task history; durable storage is a later milestone.
-
-Timeouts are optional and apply to the whole execution, including retry waits. Cancellation is propagated through the tool context. Tools must cooperate with context cancellation; Go cannot forcibly stop a tool implementation that ignores its context.
-
-Retries default to one attempt. A tool must implement `RetryableTool` and return `true` before the configured retry policy is used. The maximum is five total attempts. This is a safety boundary, not a guarantee that a tool is idempotent: tool authors are responsible for opting in only when repeating the operation is safe.
-
-## Project structure
-
-```text
-agentforge/
-├── cmd/agentforge/       # CLI entry point
-├── internal/
-│   ├── agent/            # Task lifecycle, runner, events, reliability
-│   └── tools/            # Built-in example tools
-├── docs/                 # Architecture and design notes
-├── .github/workflows/    # Continuous integration
-├── go.mod
-├── Makefile
-├── ROADMAP.md
-└── CHANGELOG.md
-```
-
-## Design direction
-
-Go owns the runtime and control flow: task execution, tool registration, lifecycle management, reliability, and orchestration. Provider-specific AI integrations can be added behind interfaces when the execution foundation is ready. Python remains an option for specialized AI/data workloads, not a parallel orchestration runtime.
-
-The project intentionally starts as one process and one binary. A database, queue, multi-agent layer, and dashboard are not prerequisites for the first useful release.
+- Tool permissions use an explicit allow-list; a nil policy denies all calls.
+- Tool arguments are validated before execution against a supported JSON Schema subset.
+- Unknown tools and invalid arguments are rejected.
+- The model can request tools, but it cannot register new tools or grant itself permissions.
+- API keys are read from environment variables and must not be committed.
+- The current schema validator supports object, string, number, integer, boolean, array, enum, required, properties, and `additionalProperties:false`. It is not a complete JSON Schema implementation.
+- The model loop has a bounded number of turns. Provider calls inherit context cancellation.
 
 ## Current limitations
 
-- The only built-in tool is a local echo example.
-- No LLM provider, planning loop, persistent memory, or workflow scheduler exists yet.
-- Execution events are observable but not durably stored.
-- A tool that ignores its context cannot be forcibly interrupted.
-- Human approval gates and durable task history remain future work.
+- OpenAI is the only implemented provider; the provider interface is vendor-neutral.
+- Only the local echo tool is included in agent mode.
+- No persistent conversation history, durable task store, human approval workflow, or background worker exists yet.
+- No live API call is part of CI; provider behavior is tested with an HTTP test server.
+- This is an early development foundation and has not undergone a production security review.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
 
