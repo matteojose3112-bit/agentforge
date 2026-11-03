@@ -2,6 +2,14 @@
 
 All notable changes to AgentForge are documented here.
 
+## [0.3.0] — Model and tool integration
+- Added vendor-neutral model, message, tool-call, and provider contracts.
+- Added an OpenAI Responses API adapter using the standard library HTTP client.
+- Added a bounded model/tool loop with strict tool registration.
+- Added JSON Schema argument validation and default-deny permission allow-listing.
+- Added a JSON-schema-described local echo tool and provider/agent tests.
+- Added CLI agent mode with environment-based API key configuration.
+
 ## [0.2.0] — Reliable task execution
 - Added task IDs, lifecycle statuses, UTC timestamps, structured results, duration, and attempt counts.
 - Added lifecycle and attempt events with structured `log/slog` output and an optional event callback.
