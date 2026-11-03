@@ -67,7 +67,7 @@ Go owns orchestration and tool execution. Provider-specific code is isolated beh
 - The model can request tools, but it cannot register new tools or grant itself permissions.
 - API keys are read from environment variables and must not be committed.
 - The current schema validator supports object, string, number, integer, boolean, array, enum, required, properties, and `additionalProperties:false`. It is not a complete JSON Schema implementation.
-- The model loop has a bounded number of turns. Provider calls inherit context cancellation.
+- The model loop has a bounded number of turns. Provider calls inherit context cancellation. Responses are requested with `store:false`; this does not replace reviewing the provider's applicable data-processing and retention terms.
 
 ## Current limitations
 
