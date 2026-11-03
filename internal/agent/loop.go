@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -76,6 +77,7 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 	for _, spec := range a.specs {
 		definitions = append(definitions, spec)
 	}
+	sort.Slice(definitions, func(i, j int) bool { return definitions[i].Name < definitions[j].Name })
 	for turn := 0; turn < a.maxTurns; turn++ {
 		if err := ctx.Err(); err != nil {
 			return "", err
@@ -86,6 +88,9 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 		}
 		if len(response.ToolCalls) == 0 {
 			return response.Text, nil
+		}
+		if turn == a.maxTurns-1 {
+			return "", fmt.Errorf("model exceeded maximum of %d tool turns", a.maxTurns)
 		}
 		messages = append(messages, Message{Role: "assistant", ToolCalls: response.ToolCalls})
 		for _, call := range response.ToolCalls {
