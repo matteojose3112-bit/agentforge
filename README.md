@@ -2,16 +2,16 @@
 
 A Go-based foundation for reliable AI-agent execution, tool calling, and workflow automation.
 
-> **Status:** v0.1.0 — execution foundation. This is an early development scaffold, not yet an LLM-powered autonomous agent.
+> **Status:** v0.2.0 — reliable task execution. This is an execution runtime foundation, not yet an LLM-powered autonomous agent.
 
 ## What works today
 
-- A small Go CLI.
-- A typed tool contract and explicit tool registration.
-- A runner that rejects unknown tools and empty input.
-- Context propagation and wrapped tool errors.
-- A local echo tool that exercises the full execution path.
-- Unit tests, Go vet, and GitHub Actions CI.
+- A small Go CLI and an explicit typed tool registry.
+- Structured task records with unique IDs, lifecycle status, UTC timestamps, attempts, output, and errors.
+- Execution events and structured `log/slog` logging.
+- Context cancellation and optional execution timeouts.
+- Bounded retries (maximum five attempts), only for tools that explicitly opt in as retryable.
+- A local echo tool, unit tests, Go vet, and GitHub Actions CI.
 
 ## Quick start
 
@@ -29,7 +29,13 @@ Expected output:
 hello AgentForge
 ```
 
-Print the current scaffold version:
+Set an execution timeout:
+
+```bash
+go run ./cmd/agentforge -timeout 30s -tool echo -input "hello"
+```
+
+Print the current version:
 
 ```bash
 go run ./cmd/agentforge -version
@@ -42,13 +48,23 @@ make build
 ./bin/agentforge -tool echo -input "hello"
 ```
 
+## Task lifecycle and reliability
+
+Each call to `Runner.Run` creates a task record. A task moves through `pending`, `running`, and one terminal state: `succeeded`, `failed`, or `cancelled`. The returned `Result` includes the task ID, timestamps, duration, attempt count, output, and error text.
+
+The runner emits lifecycle and attempt events through an optional callback and writes structured records with Go's `log/slog`. The runner itself does not persist task history; durable storage is a later milestone.
+
+Timeouts are optional and apply to the whole execution, including retry waits. Cancellation is propagated through the tool context. Tools must cooperate with context cancellation; Go cannot forcibly stop a tool implementation that ignores its context.
+
+Retries default to one attempt. A tool must implement `RetryableTool` and return `true` before the configured retry policy is used. The maximum is five total attempts. This is a safety boundary, not a guarantee that a tool is idempotent: tool authors are responsible for opting in only when repeating the operation is safe.
+
 ## Project structure
 
 ```text
 agentforge/
 ├── cmd/agentforge/       # CLI entry point
 ├── internal/
-│   ├── agent/            # Tool contract and execution runner
+│   ├── agent/            # Task lifecycle, runner, events, reliability
 │   └── tools/            # Built-in example tools
 ├── docs/                 # Architecture and design notes
 ├── .github/workflows/    # Continuous integration
@@ -62,14 +78,15 @@ agentforge/
 
 Go owns the runtime and control flow: task execution, tool registration, lifecycle management, reliability, and orchestration. Provider-specific AI integrations can be added behind interfaces when the execution foundation is ready. Python remains an option for specialized AI/data workloads, not a parallel orchestration runtime.
 
-The project is intentionally starting as one process and one binary. A database, queue, multi-agent layer, and dashboard are not prerequisites for the first useful release.
+The project intentionally starts as one process and one binary. A database, queue, multi-agent layer, and dashboard are not prerequisites for the first useful release.
 
 ## Current limitations
 
 - The only built-in tool is a local echo example.
 - No LLM provider, planning loop, persistent memory, or workflow scheduler exists yet.
-- The CLI is a thin development interface; it is not a production service.
-- Retry policy, approval gates, and durable task history are future work.
+- Execution events are observable but not durably stored.
+- A tool that ignores its context cannot be forcibly interrupted.
+- Human approval gates and durable task history remain future work.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
 
