@@ -17,7 +17,7 @@ The first adapter uses the Responses API over the standard library HTTP client. 
 
 ## Tool contracts and validation
 
-A model tool implements the runtime tool contract and exposes a `ToolDefinition` containing a stable name, description, JSON Schema parameter contract, and permission string. Arguments are validated before the tool is executed.
+A model tool implements the runtime tool contract and exposes a `ToolDefinition` containing a stable name, description, JSON Schema parameter contract, and permission string. Arguments are validated before the tool is executed, and tool outputs are validated before being sent back to the model.
 
 The validator intentionally supports a bounded JSON Schema subset: object, string, number, integer, boolean, array, enum, required, properties, and `additionalProperties:false`. Unsupported schema features are not silently interpreted as supported.
 
