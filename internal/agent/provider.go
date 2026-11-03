@@ -26,6 +26,7 @@ type ToolDefinition struct {
 	Name        string          `json:"name"`
 	Description string          `json:"description"`
 	Parameters  json.RawMessage `json:"parameters"`
+	OutputSchema json.RawMessage `json:"output_schema"`
 	Permission  string          `json:"permission"`
 }
 
