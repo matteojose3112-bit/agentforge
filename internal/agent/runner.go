@@ -188,9 +188,7 @@ func (r *Runner) Run(ctx context.Context, toolName, input string) (Result, error
 			timer := time.NewTimer(delay)
 			select {
 			case <-execCtx.Done():
-				if !timer.Stop() {
-					<-timer.C
-				}
+				timer.Stop()
 				runErr = execCtx.Err()
 			case <-timer.C:
 			}
