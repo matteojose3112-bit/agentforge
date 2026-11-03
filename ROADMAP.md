@@ -16,7 +16,7 @@
 ## v0.3 — Model and tool integration
 - [x] Define a vendor-independent model provider interface.
 - [x] Add an OpenAI Responses API provider with environment-based credentials.
-- [x] Add JSON Schema validation for model-supplied tool arguments.
+- [x] Add JSON Schema validation for tool inputs and outputs.
 - [x] Add explicit default-deny tool permission boundaries.
 - [x] Add bounded model/tool turns and provider adapter tests.
 - [ ] Run a live API smoke test after a local API key is configured.
