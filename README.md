@@ -1,84 +1,142 @@
 # AgentForge
 
-A Go-based foundation for reliable AI-agent execution, tool calling, and workflow automation.
+**A lightweight Go runtime for model-driven tool execution and practical workflow automation.**
 
-> **Status:** v0.3.0 — model and tool integration. This is an early agent runtime, not a production-ready autonomous system.
+> **Release status:** v0.3.0 — model and tool integration. Early-stage developer foundation; not a production-ready autonomous system.
+
+AgentForge keeps orchestration in Go and puts model providers behind a small interface. Models can request capabilities, but only tools explicitly registered by the application can execute, and permissions are denied unless explicitly granted.
+
+## Why AgentForge
+
+- **Small by design:** one Go process, standard-library HTTP integration, no mandatory database or queue.
+- **Provider boundary:** model orchestration is independent of the first OpenAI adapter.
+- **Controlled tool use:** registered tools, schema-validated inputs and outputs, explicit permission allow-list.
+- **Bounded execution:** limited model/tool turns, context cancellation, execution timeouts, and opt-in retries in the lower-level runner.
+- **Testable:** provider behavior is tested with a local HTTP server; CI runs tests, vet, and a CLI build without paid API calls.
 
 ## What works today
 
-- A small Go CLI and an explicit typed tool registry.
-- Structured task records, lifecycle events, cancellation, timeouts, and bounded opt-in retries.
-- A vendor-independent model provider interface.
-- An OpenAI Responses API provider using Go's standard HTTP client.
-- JSON Schema validation for model-supplied tool arguments and tool outputs.
-- Explicit default-deny tool permissions.
-- A local echo tool, unit tests, Go vet, and GitHub Actions CI.
+- Go CLI with direct tool mode and model-backed agent mode.
+- Typed tool registry and task execution lifecycle.
+- Vendor-independent model provider interface.
+- OpenAI Responses API adapter using Go's standard `net/http` client.
+- JSON Schema subset validation for model-supplied tool arguments and tool outputs.
+- Default-deny tool permissions.
+- Local echo tool for a complete first tool-call cycle.
+- Unit tests, Go vet, and GitHub Actions CI.
 
 ## Quick start
 
 Requirements: Go 1.23 or newer.
 
 ```bash
+git clone https://github.com/matteojose3112-bit/agentforge.git
+cd agentforge
+
 go test ./...
 go vet ./...
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 ```
 
+Expected output:
+
+```text
+hello AgentForge
+```
+
 ## Run a model-backed agent
 
-The OpenAI integration uses the Responses API. Create an API key in your OpenAI developer account and set it locally; never commit it to the repository.
+The first provider uses the OpenAI Responses API. Set an API key in your local environment; never commit it to the repository.
 
 Linux/macOS:
 
 ```bash
 export OPENAI_API_KEY="your-api-key"
-go run ./cmd/agentforge -agent -model gpt-6-luna -prompt "Use the echo tool to repeat hello" -allow-permission tool.echo
+go run ./cmd/agentforge -agent \
+  -model gpt-6-luna \
+  -prompt "Use the echo tool to repeat hello AgentForge" \
+  -allow-permission tool.echo
 ```
 
 PowerShell:
 
 ```powershell
 $env:OPENAI_API_KEY = "your-api-key"
-go run ./cmd/agentforge -agent -model gpt-6-luna -prompt "Use the echo tool to repeat hello" -allow-permission tool.echo
+go run ./cmd/agentforge -agent `
+  -model gpt-6-luna `
+  -prompt "Use the echo tool to repeat hello AgentForge" `
+  -allow-permission tool.echo
 ```
 
-Tool permissions are denied by default. Grant only the exact permission strings required by the task using `-allow-permission`. The current model mode exposes only the local echo tool. Model API usage may incur charges on the API account.
+The model API account may incur usage charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode currently exposes only the local echo tool.
 
-Direct tool mode remains available:
+See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test.
 
-```bash
-go run ./cmd/agentforge -tool echo -input "hello AgentForge"
+## How it works
+
+```text
+User prompt
+    |
+    v
+AgentForge runtime -----> Model provider (OpenAI adapter)
+    |                              |
+    |<------ text / tool call -----|
+    |
+    v
+Registered tool lookup
+    |
+    v
+Permission check (default deny)
+    |
+    v
+Input schema validation
+    |
+    v
+Tool execution
+    |
+    v
+Output schema validation
+    |
+    v
+Tool result returned to model
+    |
+    v
+Final response
 ```
 
 ## Architecture
 
-- `internal/agent`: provider-neutral interfaces, tool loop, schema validation, permissions, and reliable execution.
+- `cmd/agentforge`: CLI entry point and flags.
+- `internal/agent`: provider-neutral contracts, model/tool loop, schema validation, permissions, and reliable execution.
 - `internal/providers/openai`: OpenAI Responses API adapter.
-- `internal/tools`: local capabilities and JSON-schema-described model tools.
-- `cmd/agentforge`: CLI entry point.
+- `internal/tools`: concrete capabilities and their JSON Schema descriptions.
 
-Go owns orchestration and tool execution. Provider-specific code is isolated behind `agent.Provider`. The first implementation uses the standard library HTTP client to keep the runtime small.
+Go owns orchestration and tool execution. Provider-specific request/response translation stays behind `agent.Provider`. See [architecture notes](docs/ARCHITECTURE.md).
 
-## Safety boundaries
+## Safety boundaries and limitations
 
-- Tool permissions use an explicit allow-list; a nil policy denies all calls.
-- Tool arguments are validated before execution and tool outputs are validated before being returned to the model, using a supported JSON Schema subset.
-- Unknown tools and invalid arguments are rejected.
-- The model can request tools, but it cannot register new tools or grant itself permissions.
+- A nil permission policy denies all model-requested tool calls.
+- Tool arguments are validated before execution and tool outputs before being returned to the model.
+- The supported JSON Schema subset includes object, string, number, integer, boolean, array, enum, required, properties, and `additionalProperties:false`; this is not full JSON Schema.
+- The model cannot register tools or grant itself permissions.
 - API keys are read from environment variables and must not be committed.
-- The current schema validator supports object, string, number, integer, boolean, array, enum, required, properties, and `additionalProperties:false`. It is not a complete JSON Schema implementation.
-- The model loop has a bounded number of turns. Provider calls inherit context cancellation. Responses are requested with `store:false`; this does not replace reviewing the provider's applicable data-processing and retention terms.
+- Model/tool turns are bounded and provider calls inherit context cancellation.
+- Requests use `store:false`; this does not replace reviewing the provider's applicable data-processing and retention terms.
+- Only OpenAI is implemented today; the provider interface is vendor-neutral.
+- Agent mode currently includes only the local echo tool.
+- Persistent conversation history, durable task storage, human approval workflows, background workers, and production security review are not implemented.
+- CI does not call a paid live model API. The live smoke test remains a local release check.
 
-## Current limitations
+## Development
 
-- OpenAI is the only implemented provider; the provider interface is vendor-neutral.
-- Only the local echo tool is included in agent mode.
-- No persistent conversation history, durable task store, human approval workflow, or background worker exists yet.
-- No live API call is part of CI; provider behavior is tested with an HTTP test server.
-- This is an early development foundation and has not undergone a production security review.
+```bash
+go test ./...
+go vet ./...
+go build ./cmd/agentforge
+```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
+See [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Contributing
 
-Keep changes small, typed, testable, and explicit about side effects. Run `go test ./...` and `go vet ./...` before opening a pull request.
+Keep changes small, typed, testable, and explicit about side effects. See [contribution guidelines](CONTRIBUTING.md).
