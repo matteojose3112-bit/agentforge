@@ -4,33 +4,42 @@
 
 AgentForge is a single Go process with explicitly registered capabilities.
 
-- **CLI** (`cmd/agentforge`): parses user input and starts a task.
-- **Agent runner** (`internal/agent`): validates the requested capability, owns task lifecycle and applies reliability policy.
-- **Tools** (`internal/tools`): concrete capabilities that implement the `Tool` contract.
+- **CLI** (`cmd/agentforge`): parses direct tool or model-backed agent requests.
+- **Agent runtime** (`internal/agent`): owns provider-neutral conversation types, tool loop, schema validation, permission checks, and reliable execution.
+- **Provider adapter** (`internal/providers/openai`): translates the provider-neutral contract to the OpenAI Responses API.
+- **Tools** (`internal/tools`): concrete capabilities and their JSON Schema descriptions.
 
-The initial echo tool proves the execution path without requiring credentials, network access, or an LLM provider.
+## Model provider boundary
 
-## Task lifecycle
+The `agent.Provider` interface accepts a provider-neutral model request and returns text or tool calls. OpenAI-specific HTTP payloads and response parsing remain inside the OpenAI adapter. A second provider can implement the same interface without changing the agent loop.
 
-Every runner invocation creates a task with a generated ID and UTC creation timestamp. Valid executions transition from `pending` to `running`, then to `succeeded`, `failed`, or `cancelled`. The returned result includes timestamps, elapsed duration, attempt count, output, and error text.
+The first adapter uses the Responses API over the standard library HTTP client. API credentials are passed through `OPENAI_API_KEY`, never source-controlled. Provider tests use a local HTTP test server; CI does not call a paid API.
 
-The runner emits task and attempt events through an optional callback and structured `log/slog` records. Events are currently in-process only; durable execution history requires a later storage implementation.
+## Tool contracts and validation
+
+A model tool implements the runtime tool contract and exposes a `ToolDefinition` containing a stable name, description, JSON Schema parameter contract, and permission string. Arguments are validated before the tool is executed.
+
+The validator intentionally supports a bounded JSON Schema subset: object, string, number, integer, boolean, array, enum, required, properties, and `additionalProperties:false`. Unsupported schema features are not silently interpreted as supported.
+
+## Permission boundaries
+
+Every tool definition names a permission. The runtime asks a `PermissionPolicy` before executing a model-requested tool. The included allow-list policy grants only explicitly configured permission strings. A nil policy denies all tool calls. Model output cannot add tools or grant permissions.
+
+This is an execution boundary, not a complete sandbox: an allowed tool still runs with the process's operating-system privileges. Tool implementations must minimize authority and validate their own business rules.
+
+## Bounded orchestration
+
+The model/tool loop is limited to a configured number of turns. Context cancellation propagates to provider requests and tools. The runtime rejects unknown tool names, invalid JSON arguments, and denied permissions.
 
 ## Reliability
 
-The caller's context is propagated to the tool. An optional timeout bounds the entire run, including retry delays. Tools must observe context cancellation; the runtime cannot forcibly terminate code that ignores its context.
-
-Retries default to one total attempt. A tool must explicitly implement `RetryableTool` and return true to receive the configured retry allowance. The maximum is five total attempts, with optional capped exponential backoff. Tool authors are responsible for declaring retry safety; non-idempotent tools should not opt in.
+The lower-level runner retains task IDs, lifecycle events, timeouts, cancellation, and bounded opt-in retries. Tool retries remain disabled by default and require an explicit tool opt-in.
 
 ## Design constraints
 
 1. Keep the first releases as a single deployable Go binary.
-2. Keep tool contracts small, typed, and testable.
-3. Make side effects explicit; tools should not receive unrestricted ambient authority.
-4. Do not retry side-effecting tools unless their operation is safe to repeat.
-5. Add persistence, model providers, and approval gates only with clear requirements and tests.
-6. Keep provider-specific code behind interfaces when model integration is introduced.
-
-## Planned evolution
-
-The next increment is a vendor-independent model provider interface, schema-validated tool contracts, and explicit permission boundaries. Durable task storage and human approval follow when real workflows require them. Avoid distributed infrastructure until a real workload justifies it.
+2. Keep provider-specific code behind a vendor-neutral interface.
+3. Make side effects explicit and permissioned.
+4. Validate model-supplied arguments before tool execution.
+5. Do not retry side-effecting tools unless repeating the operation is safe.
+6. Add persistence, approval gates, and distributed infrastructure only when requirements justify them.
