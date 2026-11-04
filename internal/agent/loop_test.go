@@ -136,7 +136,7 @@ func TestAgentExecutesTextAnalysisTool(t *testing.T) {
 
 
 func TestAgentExecutesPermittedCSVAnalysisTool(t *testing.T) {
-	csvInput := "name,amount\\nAlpha,10\\nBeta,20\\n"
+	csvInput := "name,amount\nAlpha,10\nBeta,20\n"
 	arguments, err := json.Marshal(map[string]string{"csv": csvInput})
 	if err != nil {
 		t.Fatal(err)
