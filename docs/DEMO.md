@@ -40,6 +40,7 @@ go run ./cmd/agentforge -tool text_analyze -input '{"text":"A small business can
 ```
 
 It returns JSON containing word count, Unicode character count, line count, and an estimated reading time. The tool accepts up to 256 KiB of text per call.
+
 Analyze a small CSV without an API key:
 
 ```bash
