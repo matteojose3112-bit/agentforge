@@ -37,5 +37,5 @@ All notable changes to AgentForge are documented here.
 
 ### Documentation
 - Refreshed README and roadmap to match the implemented v0.3.0 Go runtime, OpenAI Responses adapter, schema validation, and default-deny permissions.
-- Reaffirmed that agent mode currently exposes only the local echo tool and that the project is not production-ready.
+- Reaffirmed the project's early-stage status, explicit tool permissions, and non-production limitations.
 - Clarified the live API smoke test as the immediate next validation step; persistence and human approval remain future work.
