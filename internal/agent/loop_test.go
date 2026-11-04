@@ -117,3 +117,19 @@ func TestAgentPropagatesProviderErrors(t *testing.T) {
 		t.Fatal("expected provider error")
 	}
 }
+
+
+func TestAgentExecutesTextAnalysisTool(t *testing.T) {
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "call-text-1", Name: "text_analyze", Arguments: json.RawMessage("{\"text\":\"one two three\"}")}}},
+		{Text: "The text contains three words."},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{"tool.text.analyze": true}, 2, tools.TextAnalyze{})
+	if err != nil { t.Fatal(err) }
+	result, err := runner.Run(context.Background(), "Analyze this text.")
+	if err != nil || result != "The text contains three words." { t.Fatalf("Run() = %q, %v", result, err) }
+	if len(provider.requests) != 2 { t.Fatalf("provider requests = %d, want 2", len(provider.requests)) }
+	var toolResult struct { Words int `json:"words"` }
+	if err := json.Unmarshal([]byte(provider.requests[1].Messages[2].Content), &toolResult); err != nil { t.Fatal(err) }
+	if toolResult.Words != 3 { t.Fatalf("tool word count = %d, want 3", toolResult.Words) }
+}

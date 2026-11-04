@@ -23,6 +23,7 @@ AgentForge keeps orchestration in Go and puts model providers behind a small int
 - JSON Schema subset validation for model-supplied tool arguments and tool outputs.
 - Default-deny tool permissions.
 - Local echo tool for a complete first tool-call cycle.
+- Read-only text analysis tool for word, Unicode character, line, and estimated reading-time metrics.
 - Unit tests, Go vet, and GitHub Actions CI.
 
 ## Quick start
@@ -68,7 +69,7 @@ go run ./cmd/agentforge -agent `
   -allow-permission tool.echo
 ```
 
-The model API account may incur usage charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode currently exposes only the local echo tool.
+The model API account may incur usage charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes a local echo tool and a read-only text analysis tool.
 
 See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test.
 
@@ -123,7 +124,7 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 - Model/tool turns are bounded and provider calls inherit context cancellation.
 - Requests use `store:false`; this does not replace reviewing the provider's applicable data-processing and retention terms.
 - Only OpenAI is implemented today; the provider interface is vendor-neutral.
-- Agent mode currently includes only the local echo tool.
+- Agent mode includes a local echo tool and a read-only text analysis tool. Text analysis accepts at most 256 KiB per call.
 - Persistent conversation history, durable task storage, human approval workflows, background workers, and production security review are not implemented.
 - CI does not call a paid live model API. The live smoke test remains a local release check.
 
@@ -143,4 +144,4 @@ Keep changes small, typed, testable, and explicit about side effects. See [contr
 
 ## Documentation review — 2026-11-03
 
-Documentation review — 2026-11-03: AgentForge is an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo tool, tests, vet, and CI are implemented. Agent mode currently exposes only the echo tool. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.
+Documentation review — 2026-11-04: AgentForge remains an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo tool, read-only text analysis tool, tests, vet, and CI are implemented. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.

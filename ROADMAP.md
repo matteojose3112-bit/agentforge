@@ -21,6 +21,7 @@
 - [x] Add bounded model/tool turns and provider adapter tests.
 - [x] Publish a step-by-step local and model-backed demo guide.
 - [x] Document contribution and development expectations.
+- [x] Add a deterministic, read-only text analysis capability with no model/API dependency for local testing.
 - [ ] Run a live API smoke test after a local API key is configured.
 
 ## Release acceptance checklist
@@ -52,4 +53,4 @@ Last reviewed: 2026-11-03
 
 ## Current direction — 2026-11-03
 
-**v0.3.0 foundation implemented · Early-stage, not production-ready.** First complete the local live-model smoke test with a configured API key and verify the default-deny boundary under the documented demo. Record the result before tagging a release candidate. Keep persistence, human approval, workflow composition, scheduling, and benchmarks evidence-driven; do not add a database, queue, dashboard, or multi-agent layer before the single-agent runtime has demonstrated a need.
+**v0.3.0 foundation implemented · Early-stage, not production-ready.** The local runtime now includes a deterministic text-analysis capability that can be tested without a model API key. Continue expanding and validating useful, low-risk local capabilities while the live model smoke test remains unavailable. Do not tag a release candidate until the model/tool cycle and default-deny boundary have been verified. Keep persistence, human approval, workflow composition, scheduling, and benchmarks evidence-driven; do not add a database, queue, dashboard, or multi-agent layer before the single-agent runtime has demonstrated a need.
