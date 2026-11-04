@@ -4,6 +4,9 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 - Added a read-only text analysis tool with word, Unicode character, line, and estimated reading-time metrics.
+- Added a bounded CSV analysis tool reporting row/column counts, missing values, and min/max/mean for fully numeric columns.
+- Registered CSV analysis in direct CLI and model-backed agent modes with the dedicated `tool.csv.analyze` permission.
+- Added CSV parser, size, row-count, header, numeric-summary, and agent-loop tests; documented a no-key CSV demo.
 - Registered text analysis in direct CLI and model-backed agent modes, with a dedicated permission string and a 256 KiB input limit.
 - Added unit tests and a no-API-key demo command for the new capability.
 
