@@ -149,8 +149,13 @@ func (CSVAnalyze) Execute(_ context.Context, input string) (string, error) {
 				if number < acc.min { acc.min = number }
 				if number > acc.max { acc.max = number }
 			}
+			nextSum := acc.sum + number
+			if math.IsNaN(nextSum) || math.IsInf(nextSum, 0) {
+				acc.numeric = false
+				continue
+			}
 			acc.count++
-			acc.sum += number
+			acc.sum = nextSum
 		}
 	}
 
