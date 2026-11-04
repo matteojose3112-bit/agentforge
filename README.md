@@ -140,3 +140,7 @@ See [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), and [CONTRIBUTING.md
 ## Contributing
 
 Keep changes small, typed, testable, and explicit about side effects. See [contribution guidelines](CONTRIBUTING.md).
+
+## Documentation review — 2026-11-03
+
+Documentation review — 2026-11-03: AgentForge is an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo tool, tests, vet, and CI are implemented. Agent mode currently exposes only the echo tool. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.
