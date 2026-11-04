@@ -38,6 +38,7 @@ cd agentforge
 go test ./...
 go vet ./...
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
+go run ./cmd/agentforge -tool csv_analyze -input '{"csv":"name,amount\\nAlpha,10\\nBeta,20\\n"}'
 ```
 
 Expected output:
@@ -143,6 +144,6 @@ See [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), and [CONTRIBUTING.md
 
 Keep changes small, typed, testable, and explicit about side effects. See [contribution guidelines](CONTRIBUTING.md).
 
-## ## Documentation review — 2026-11-04
+## Documentation review — 2026-11-04
 
 AgentForge remains an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo, text analysis, and CSV analysis tools are implemented. Tests, vet, and CLI build run in CI without paid API calls. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.
