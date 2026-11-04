@@ -45,3 +45,11 @@
 - No web dashboard.
 - No multi-agent framework before single-agent execution is reliable.
 - No mandatory database, queue, or hosted model dependency.
+
+---
+
+Last reviewed: 2026-11-03
+
+## Current direction — 2026-11-03
+
+**v0.3.0 foundation implemented · Early-stage, not production-ready.** First complete the local live-model smoke test with a configured API key and verify the default-deny boundary under the documented demo. Record the result before tagging a release candidate. Keep persistence, human approval, workflow composition, scheduling, and benchmarks evidence-driven; do not add a database, queue, dashboard, or multi-agent layer before the single-agent runtime has demonstrated a need.
