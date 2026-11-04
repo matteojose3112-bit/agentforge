@@ -22,7 +22,7 @@ func (TextAnalyze) Definition() agent.ToolDefinition {
 		Name:        "text_analyze",
 		Description: "Count words, Unicode characters, and lines in supplied text, and estimate reading time at 200 words per minute.",
 		Permission:  "tool.text.analyze",
-		Parameters: json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":false}`),
+		Parameters:  json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":false}`),
 		OutputSchema: json.RawMessage(`{"type":"object","properties":{"words":{"type":"integer"},"characters":{"type":"integer"},"lines":{"type":"integer"},"estimated_reading_minutes":{"type":"integer"}},"required":["words","characters","lines","estimated_reading_minutes"],"additionalProperties":false}`),
 	}
 }
@@ -47,14 +47,14 @@ func (TextAnalyze) Execute(_ context.Context, input string) (string, error) {
 		readingMinutes = 1
 	}
 	result := struct {
-		Words                  int `json:"words"`
-		Characters             int `json:"characters"`
-		Lines                  int `json:"lines"`
+		Words                   int `json:"words"`
+		Characters              int `json:"characters"`
+		Lines                   int `json:"lines"`
 		EstimatedReadingMinutes int `json:"estimated_reading_minutes"`
 	}{
-		Words: words,
-		Characters: utf8.RuneCountInString(args.Text),
-		Lines: strings.Count(args.Text, "\n") + 1,
+		Words:                   words,
+		Characters:              utf8.RuneCountInString(args.Text),
+		Lines:                   strings.Count(args.Text, "\n") + 1,
 		EstimatedReadingMinutes: readingMinutes,
 	}
 	encoded, err := json.Marshal(result)
