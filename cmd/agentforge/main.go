@@ -38,7 +38,7 @@ func run(args []string, out *os.File) error {
 		for _, permission := range strings.Split(*permissions, ",") {
 			if permission = strings.TrimSpace(permission); permission != "" { allow[permission] = true }
 		}
-		runner, err := agent.NewAgent(provider, *model, allow, 5, tools.AgentEcho{}); if err != nil { return err }
+		runner, err := agent.NewAgent(provider, *model, allow, 5, tools.AgentEcho{}, tools.TextAnalyze{}); if err != nil { return err }
 		ctx := context.Background()
 		if *timeout > 0 { var cancel context.CancelFunc; ctx, cancel = context.WithTimeout(ctx, *timeout); defer cancel() }
 		result, err := runner.Run(ctx, *prompt); if err != nil { return err }
