@@ -2,6 +2,11 @@
 
 All notable changes to AgentForge are documented here.
 
+## [Unreleased]
+- Added a read-only text analysis tool with word, Unicode character, line, and estimated reading-time metrics.
+- Registered text analysis in direct CLI and model-backed agent modes, with a dedicated permission string and a 256 KiB input limit.
+- Added unit tests and a no-API-key demo command for the new capability.
+
 ## [0.3.0] — Model and tool integration
 - Added vendor-neutral model, message, tool-call, and provider contracts.
 - Added an OpenAI Responses API adapter using the standard library HTTP client.
