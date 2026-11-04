@@ -39,6 +39,7 @@ func run(args []string, out *os.File) error {
 		_, err := fmt.Fprintln(out, version)
 		return err
 	}
+	registeredTools := []agent.Tool{tools.Echo{}, tools.TextAnalyze{}, tools.CSVAnalyze{}}
 	if *agentMode {
 		if strings.TrimSpace(*prompt) == "" {
 			return fmt.Errorf("missing -prompt for agent mode")
@@ -53,7 +54,7 @@ func run(args []string, out *os.File) error {
 				allow[permission] = true
 			}
 		}
-		runner, err := agent.NewAgent(provider, *model, allow, 5, tools.AgentEcho{}, tools.TextAnalyze{})
+		runner, err := agent.NewAgent(provider, *model, allow, 5, registeredTools...)
 		if err != nil {
 			return err
 		}
@@ -73,7 +74,7 @@ func run(args []string, out *os.File) error {
 	if *input == "" {
 		return fmt.Errorf("missing -input; try: agentforge -tool echo -input 'hello'")
 	}
-	runner, err := agent.NewRunnerWithOptions(agent.Options{Timeout: *timeout}, tools.Echo{}, tools.TextAnalyze{})
+	runner, err := agent.NewRunnerWithOptions(agent.Options{Timeout: *timeout}, registeredTools...)
 	if err != nil {
 		return err
 	}
