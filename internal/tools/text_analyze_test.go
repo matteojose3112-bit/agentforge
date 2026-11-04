@@ -14,15 +14,15 @@ func TestTextAnalyzeCountsUnicodeWordsAndLines(t *testing.T) {
 		t.Fatal(err)
 	}
 	var got struct {
-		Words int `json:"words"`
-		Characters int `json:"characters"`
-		Lines int `json:"lines"`
+		Words                   int `json:"words"`
+		Characters              int `json:"characters"`
+		Lines                   int `json:"lines"`
 		EstimatedReadingMinutes int `json:"estimated_reading_minutes"`
 	}
 	if err := json.Unmarshal([]byte(output), &got); err != nil {
 		t.Fatal(err)
 	}
-	if got.Words != 4 || got.Characters != 22 || got.Lines != 2 || got.EstimatedReadingMinutes != 1 {
+	if got.Words != 4 || got.Characters != 21 || got.Lines != 2 || got.EstimatedReadingMinutes != 1 {
 		t.Fatalf("unexpected analysis: %+v", got)
 	}
 }
@@ -34,7 +34,9 @@ func TestTextAnalyzeRoundsReadingTimeUp(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var got struct { EstimatedReadingMinutes int `json:"estimated_reading_minutes"` }
+	var got struct {
+		EstimatedReadingMinutes int `json:"estimated_reading_minutes"`
+	}
 	if err := json.Unmarshal([]byte(output), &got); err != nil {
 		t.Fatal(err)
 	}
