@@ -41,6 +41,14 @@ go run ./cmd/agentforge -tool text_analyze -input '{"text":"A small business can
 
 It returns JSON containing word count, Unicode character count, line count, and an estimated reading time. The tool accepts up to 256 KiB of text per call.
 
+Analyze a small CSV without an API key:
+
+```bash
+go run ./cmd/agentforge -tool csv_analyze -input '{"csv":"name,amount\\nAlpha,10\\nBeta,20\\n"}'
+```
+
+CSV analysis reports data rows, columns, header names, missing cells, and min/max/mean for columns whose non-empty values are all numeric. It accepts CSV input up to 1 MiB, 10,000 data rows, and 100 columns; the first record must be a unique, non-empty header row.
+
 On PowerShell, the built executable is `agentforge.exe`:
 
 ```powershell
@@ -75,13 +83,13 @@ go run ./cmd/agentforge -agent `
   -allow-permission tool.echo
 ```
 
-The model can request the registered `echo` or `text_analyze` function. AgentForge validates the arguments and the matching permission before execution, returns the tool output to the model, and prints the model's final response. Exact wording is model-generated and will vary.
+The model can request the registered `echo`, `text_analyze`, or `csv_analyze` function. AgentForge validates the arguments and the matching permission before execution, returns the tool output to the model, and prints the model's final response. Exact wording is model-generated and will vary.
 
 To choose a different API model, pass its exact supported model ID with `-model`. The default is `gpt-6-luna`.
 
 ## 4. Check the permission boundary
 
-The runtime denies tool calls by default. The model-backed command above explicitly grants only `tool.echo`. To let the agent analyze text, grant `tool.text.analyze` as well.
+The runtime denies tool calls by default. The model-backed command above explicitly grants only `tool.echo`. To let the agent analyze text, grant `tool.text.analyze`; to analyze CSV data, grant `tool.csv.analyze` as well.
 
 You can verify the default-deny behavior by omitting `-allow-permission tool.echo`. This still makes a model API request and may incur a small charge, but AgentForge should reject the requested tool call rather than execute it.
 
@@ -100,6 +108,6 @@ You can verify the default-deny behavior by omitting `-allow-permission tool.ech
 
 ## 6. What this demo proves — and does not prove
 
-It demonstrates one model provider, two local tools, a bounded model/tool loop, schema validation, and explicit permissions. The text-analysis tool can also be exercised locally without a model API key. It does not demonstrate persistent conversations, durable task storage, human approval workflows, background jobs, multi-agent coordination, or production-grade sandboxing.
+It demonstrates one model provider, three local tools, a bounded model/tool loop, schema validation, and explicit permissions. The text- and CSV-analysis tools can also be exercised locally without a model API key. It does not demonstrate persistent conversations, durable task storage, human approval workflows, background jobs, multi-agent coordination, or production-grade sandboxing.
 
 The automated test suite uses a local HTTP test server; CI does not make paid model calls. A successful local test run is not a substitute for recording a successful live API smoke test.

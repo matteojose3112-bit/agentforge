@@ -133,3 +133,37 @@ func TestAgentExecutesTextAnalysisTool(t *testing.T) {
 	if err := json.Unmarshal([]byte(provider.requests[1].Messages[2].Content), &toolResult); err != nil { t.Fatal(err) }
 	if toolResult.Words != 3 { t.Fatalf("tool word count = %d, want 3", toolResult.Words) }
 }
+
+
+func TestAgentExecutesPermittedCSVAnalysisTool(t *testing.T) {
+	csvInput := "name,amount\nAlpha,10\nBeta,20\n"
+	arguments, err := json.Marshal(map[string]string{"csv": csvInput})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "call-csv-1", Name: "csv_analyze", Arguments: arguments}}},
+		{Text: "The CSV contains two rows and one numeric column."},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{"tool.csv.analyze": true}, 2, tools.CSVAnalyze{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := runner.Run(context.Background(), "Analyze this CSV.")
+	if err != nil || result != "The CSV contains two rows and one numeric column." {
+		t.Fatalf("Run() = %q, %v", result, err)
+	}
+	if len(provider.requests) != 2 {
+		t.Fatalf("provider requests = %d, want 2", len(provider.requests))
+	}
+	var toolResult struct {
+		Rows int `json:"rows"`
+		Columns int `json:"columns"`
+	}
+	if err := json.Unmarshal([]byte(provider.requests[1].Messages[2].Content), &toolResult); err != nil {
+		t.Fatal(err)
+	}
+	if toolResult.Rows != 2 || toolResult.Columns != 2 {
+		t.Fatalf("unexpected CSV tool result: %+v", toolResult)
+	}
+}
