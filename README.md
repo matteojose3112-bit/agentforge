@@ -4,9 +4,17 @@
 
 > **Live project site:** [AgentForge on GitHub Pages](https://matteojose3112-bit.github.io/agentforge/) · **Repository:** [GitHub](https://github.com/matteojose3112-bit/agentforge)
 
-> **Release status:** v0.3.0 — model and tool integration. Early-stage developer foundation; not a production-ready autonomous system.
+> **Release status:** v0.3.0 foundation implemented. Early-stage developer project; not production-ready. The live model/tool workflow has not yet been verified with a real API key.
 
 AgentForge keeps orchestration in Go and puts model providers behind a small interface. Models can request capabilities, but only tools explicitly registered by the application can execute, and permissions are denied unless explicitly granted.
+
+## Current project status
+
+The v0.3.0 runtime and local business-analysis examples are implemented. The next milestone is to turn these foundations into a reliable, demonstrable AI Sales Operations Assistant: an agent workflow that can interpret a CRM pipeline snapshot, explain performance, identify data or process issues, and prepare useful next-step recommendations.
+
+**What is verified in the repository:** local tool execution paths, deterministic analysis tools, automated tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls.
+
+**What is not yet verified or implemented:** a successful live model/tool cycle against an actual provider account; persisted conversations or task history; approval checkpoints; scheduled/background workflows; and production deployment or security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
 
 ## Why AgentForge
 
@@ -150,4 +158,6 @@ Keep changes small, typed, testable, and explicit about side effects. See [contr
 
 ## Documentation review — 2026-11-05
 
-AgentForge remains an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo, text analysis, CSV analysis, and file-based direct input are implemented. The repository includes synthetic CRM lead-pipeline profiling and funnel-analysis examples that run without an API key. Tests, vet, and CLI build run in CI without paid API calls. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.
+The repository is at the v0.3.0 implementation baseline. The local CLI, provider abstraction, OpenAI adapter, bounded model/tool loop, schema validation, default-deny permissions, text and CSV analysis, CRM lead-pipeline metrics, synthetic examples, and GitHub Pages project site are present. Automated tests and CI cover local behavior without paid model calls. A real provider-backed tool cycle has not yet been confirmed, so the project is not presented as a verified live AI assistant or production system.
+
+The next development focus is a focused AI Sales Operations Assistant workflow built on the existing CRM analysis capabilities. Initial work should emphasize a deterministic, testable business workflow and evaluation examples before adding persistence, scheduling, dashboards, or more infrastructure.
