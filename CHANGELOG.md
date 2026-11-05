@@ -3,6 +3,9 @@
 All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
+- Added JSON file input for direct CLI tool execution, avoiding shell-escaping long CSV payloads.
+- Added a synthetic CRM lead-pipeline example and portfolio case study with reproducible expected output.
+- Require an explicit provider-supported model ID in agent mode instead of shipping an unverified default model name.
 - Added a read-only text analysis tool with word, Unicode character, line, and estimated reading-time metrics.
 - Added a bounded CSV analysis tool reporting row/column counts, missing values, and min/max/mean for fully numeric columns.
 - Registered CSV analysis in direct CLI and model-backed agent modes with the dedicated `tool.csv.analyze` permission.
