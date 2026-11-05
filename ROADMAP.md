@@ -2,20 +2,20 @@
 
 AgentForge is being developed in small, verifiable milestones. Checkboxes describe repository implementation status, not aspirations or unverified live behavior.
 
-## v0.1 — Execution foundation <badge>Complete</badge>
+## v0.1 — Execution foundation (complete)
 - [x] Establish the Go module and CLI entry point.
 - [x] Define a typed tool contract and registry-backed runner.
 - [x] Add a safe local example tool.
 - [x] Add unit tests and Go CI.
 - [x] Document architecture and development commands.
 
-## v0.2 — Reliable task lifecycle <badge>Complete</badge>
+## v0.2 — Reliable task lifecycle (complete)
 - [x] Add structured task IDs, statuses, timestamps, and results.
 - [x] Add execution events and structured logging.
 - [x] Add context-aware timeouts and bounded, opt-in retry policy.
 - [x] Add tests for failures, cancellation, timeout, and retry behavior.
 
-## v0.3 — Model and tool integration <badge>Implemented</badge>
+## v0.3 — Model and tool integration (implemented; live validation outstanding)
 - [x] Define a vendor-independent model provider interface.
 - [x] Add an OpenAI Responses API provider with environment-based credentials.
 - [x] Add JSON Schema validation for tool inputs and outputs.
@@ -81,7 +81,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - Keep business calculations deterministic and testable; use the model for explanation and grounded recommendations.
 - Keep synthetic/demo data clearly labeled; never imply it is real client data.
 - Keep tools read-only until a human approval design and explicit action permissions exist.
-- Avoid adding a database, queue, dashboard, or multi-agent architecture without evidence that the workflow needs it.
+- Avoid adding a database, queue, dashboard, or multi-agent architecture without evidence that the workflow needs them.
 
 ## Non-goals for the current milestone
 - No web dashboard.
