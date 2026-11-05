@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -27,17 +28,39 @@ func main() {
 
 func run(args []string, out *os.File) error {
 	flags := flag.NewFlagSet("agentforge", flag.ContinueOnError)
-	flags.SetOutput(os.Stderr)
-	showVersion := flags.Bool("version", false, "print version and build metadata")
-	agentMode := flags.Bool("agent", false, "run a model-backed agent using OpenAI")
-	toolName := flags.String("tool", "echo", "registered tool to execute in direct mode")
-	input := flags.String("input", "", "direct tool input as a JSON string")
-	inputFile := flags.String("input-file", "", "read direct tool JSON input from a file")
-	prompt := flags.String("prompt", "", "user prompt for agent mode")
-	model := flags.String("model", "", "model ID supported by your provider account (required in agent mode)")
-	timeout := flags.Duration("timeout", 0, "execution timeout (for example 30s)")
-	permissions := flags.String("allow-permission", "", "comma-separated tool permissions to grant (default: deny all)")
+	flags.SetOutput(out)
+	flags.Usage = func() {
+		fmt.Fprintln(out, "AgentForge - controlled tool execution and AI-assisted workflows")
+		fmt.Fprintln(out, "\nUsage:")
+		fmt.Fprintln(out, "  agentforge [flags]")
+		fmt.Fprintln(out, "\nModes:")
+		fmt.Fprintln(out, "  Direct tool mode (default): execute one registered tool with JSON input.")
+		fmt.Fprintln(out, "  Agent mode (-agent): send a prompt to the configured model; tool access is denied unless explicitly allowed.")
+		fmt.Fprintln(out, "\nFlags:")
+		flags.PrintDefaults()
+		fmt.Fprintln(out, "\nExamples:")
+		fmt.Fprintln(out, "  agentforge -tool echo -input \"hello AgentForge\"")
+		fmt.Fprintln(out, "  agentforge -tool sales_ops_report -input-file examples/sales_ops_snapshot.json")
+		fmt.Fprintln(out, "  agentforge -agent -model YOUR_MODEL -prompt \"Analyze this pipeline\" -allow-permission tool.sales_ops.report")
+		fmt.Fprintln(out, "  agentforge -version")
+		fmt.Fprintln(out, "\nNotes:")
+		fmt.Fprintln(out, "  -input and -input-file are mutually exclusive.")
+		fmt.Fprintln(out, "  Agent mode requires OPENAI_API_KEY and an explicit -model value.")
+		fmt.Fprintln(out, "  -allow-permission is a comma-separated allow-list; empty means deny all.")
+	}
+	showVersion := flags.Bool("version", false, "print version, Git commit, and build timestamp")
+	agentMode := flags.Bool("agent", false, "run a model-backed agent (requires -model and OPENAI_API_KEY)")
+	toolName := flags.String("tool", "echo", "registered direct-mode tool (default: echo)")
+	input := flags.String("input", "", "JSON input for direct tool mode; mutually exclusive with -input-file")
+	inputFile := flags.String("input-file", "", "read direct tool JSON input from a file; mutually exclusive with -input")
+	prompt := flags.String("prompt", "", "user prompt supplied to the model in agent mode")
+	model := flags.String("model", "", "provider-supported model ID (required in agent mode)")
+	timeout := flags.Duration("timeout", 0, "optional execution timeout (for example 30s); 0 means no CLI timeout")
+	permissions := flags.String("allow-permission", "", "comma-separated tool permissions to grant in agent mode (default: deny all)")
 	if err := flags.Parse(args); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return nil
+		}
 		return err
 	}
 	if *showVersion {
