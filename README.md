@@ -49,11 +49,14 @@ cd agentforge
 
 go test ./...
 go vet ./...
+go run ./cmd/agentforge -h
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.json
 go run ./cmd/agentforge -tool lead_pipeline_analyze -input-file examples/lead_pipeline_analysis.json
 go run ./cmd/agentforge -tool sales_ops_report -input-file examples/sales_ops_snapshot.json
 ```
+
+Use `go run ./cmd/agentforge -h` to view the CLI modes, all flags, safety defaults, and copyable examples. The compiled binary supports the same help output with `./agentforge -h` (PowerShell: `./agentforge.exe -h`).
 
 Expected output:
 
@@ -143,6 +146,16 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 - Agent mode includes local echo, text analysis, CSV profiling, CRM lead-pipeline analysis, and sales operations reporting tools. Text analysis accepts at most 256 KiB per call; CSV tools accept at most 1 MiB, 10,000 data rows, and 100 columns.
 - Persistent conversation history, durable task storage, human approval workflows, background workers, and production security review are not implemented.
 - CI does not call a paid live model API. The live smoke test remains a local release check.
+
+## CLI help
+
+The CLI provides contextual help for direct tool execution and model-backed agent mode:
+
+```bash
+go run ./cmd/agentforge -h
+```
+
+Help includes flag descriptions, input-file versus inline-input behavior, the agent mode requirements, the default-deny permission model, and common command examples. `-h` and `-help` display help and exit successfully.
 
 ## Development
 
