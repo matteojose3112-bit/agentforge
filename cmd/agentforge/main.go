@@ -12,7 +12,11 @@ import (
 	"github.com/matteojose3112-bit/agentforge/internal/tools"
 )
 
-const version = "0.3.0"
+var (
+	version   = "0.3.0"
+	commit    = "unknown"
+	buildDate = "unknown"
+)
 
 func main() {
 	if err := run(os.Args[1:], os.Stdout); err != nil {
@@ -24,7 +28,7 @@ func main() {
 func run(args []string, out *os.File) error {
 	flags := flag.NewFlagSet("agentforge", flag.ContinueOnError)
 	flags.SetOutput(os.Stderr)
-	showVersion := flags.Bool("version", false, "print version")
+	showVersion := flags.Bool("version", false, "print version and build metadata")
 	agentMode := flags.Bool("agent", false, "run a model-backed agent using OpenAI")
 	toolName := flags.String("tool", "echo", "registered tool to execute in direct mode")
 	input := flags.String("input", "", "direct tool input as a JSON string")
@@ -37,7 +41,7 @@ func run(args []string, out *os.File) error {
 		return err
 	}
 	if *showVersion {
-		_, err := fmt.Fprintln(out, version)
+		_, err := fmt.Fprintf(out, "AgentForge %s\\nCommit: %s\\nBuilt: %s\\n", version, commit, buildDate)
 		return err
 	}
 	registeredTools := []agent.Tool{tools.Echo{}, tools.TextAnalyze{}, tools.CSVAnalyze{}, tools.LeadPipelineAnalyze{}, tools.SalesOpsReport{}}
