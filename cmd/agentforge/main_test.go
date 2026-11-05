@@ -10,7 +10,7 @@ import (
 func TestRunReadsDirectToolInputFromFile(t *testing.T) {
 	dir := t.TempDir()
 	inputPath := dir + "/input.json"
-	if err := os.WriteFile(inputPath, []byte(`{"csv":"name,amount\\nAlpha,10\\nBeta,20\\n"}`), 0o600); err != nil {
+	if err := os.WriteFile(inputPath, []byte(`{"csv":"name,amount\nAlpha,10\nBeta,20\n"}`), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	output, err := os.CreateTemp(dir, "output")
