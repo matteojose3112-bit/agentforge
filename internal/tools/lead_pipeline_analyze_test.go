@@ -116,6 +116,7 @@ func TestLeadPipelineAnalyzeRejectsInvalidInput(t *testing.T) {
 		{name: "non-numeric value", input: leadPipelineInput("stage,value\nWon,many\n", "stage", "value", "", nil, nil), want: "non-numeric value"},
 		{name: "ragged row", input: leadPipelineInput("stage,value\nWon,10,extra\n", "stage", "value", "", nil, nil), want: "expected 2"},
 		{name: "missing source column", input: leadPipelineInput("stage,value\nWon,10\n", "stage", "value", "source", nil, nil), want: "source column"},
+		{name: "same column with different case", input: leadPipelineInput("stage,value\nWon,10\n", "stage", "STAGE", "", nil, nil), want: "must be distinct"},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
