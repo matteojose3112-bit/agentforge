@@ -80,7 +80,7 @@ PowerShell:
 ```powershell
 $env:OPENAI_API_KEY = "your-api-key"
 go run ./cmd/agentforge -agent `
-  -model gpt-6-luna `
+  -model your-supported-model-id `
   -prompt "Use the echo tool to repeat hello AgentForge" `
   -allow-permission tool.echo
 ```
@@ -102,7 +102,8 @@ You can verify the default-deny behavior by omitting `-allow-permission tool.ech
 | `-version` | Print the CLI version |
 | `-tool` | Select a registered tool in direct mode |
 | `-input` | JSON input for direct tool mode |
-| `-input-file` | Read direct tool JSON input from a file |\n| `-agent` | Enable model-backed agent mode |
+| `-input-file` | Read direct tool JSON input from a file |
+| `-agent` | Enable model-backed agent mode |
 | `-prompt` | User prompt for agent mode |
 | `-model` | API model ID |
 | `-timeout` | Optional execution timeout, e.g. `30s` |
