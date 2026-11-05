@@ -4,6 +4,11 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### CLI usability
+- Replaced the minimal flag listing with structured CLI help covering direct and agent modes, usage examples, required environment configuration, mutually exclusive input options, and default-deny permissions.
+- Improved individual flag descriptions and made `-h`/`-help` return successfully after printing help.
+- Added a CLI help regression test and synchronized README, demo guide, and roadmap documentation.
+
 ### CLI and build metadata
 - Expanded `-version` output to include the application version, Git commit, and UTC build timestamp.
 - Added linker-variable defaults so local builds remain usable while release builds can embed build metadata.
