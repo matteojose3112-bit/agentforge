@@ -51,15 +51,17 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [ ] Document the boundary between calculated facts, model-generated interpretation, and suggested actions.
 
 ### Phase 2 — Build the assistant workflow
-- [ ] Compose existing CSV/lead-pipeline analysis into a single guided workflow.
-- [ ] Generate a concise sales-operations report: pipeline snapshot, conversion signals, data-quality issues, and follow-up priorities.
-- [ ] Make recommendations traceable to the input metrics; avoid inventing causes or unsupported forecasts.
-- [ ] Keep all tools read-only initially; no CRM writes, emails, or external side effects.
-- [ ] Preserve default-deny permissions and bounded execution.
+- [x] Compose the existing CRM lead-pipeline analyzer into a registered sales operations report tool.
+- [x] Generate a concise report with pipeline snapshot metrics, data-quality signals, observations, and follow-up priorities.
+- [x] Keep recommendations rule-based and tied to observed counts/fields; avoid unsupported causes or forecasts.
+- [x] Keep the report read-only; no CRM writes, emails, or external side effects.
+- [x] Register the capability behind its own default-deny permission (`tool.sales_ops.report`) and retain bounded agent execution.
+- [ ] Add a guided prompt/workflow that helps an operator map their CRM columns and interpret the report.
 
 ### Phase 3 — Evaluate and demonstrate
-- [ ] Add repeatable evaluation fixtures for expected metrics, grounded recommendations, malformed input, and permission denial.
-- [ ] Add tests for the end-to-end workflow using a fake/local provider so CI remains API-cost-free.
+- [ ] Add repeatable evaluation fixtures for multiple pipeline shapes, expected metrics, grounded recommendations, malformed input, and permission denial.
+- [x] Add deterministic unit tests for report metrics, recommendation triggers, unavailable win-rate context, schema validity, and invalid input.
+- [ ] Add tests for the full model-backed workflow using a fake/local provider so CI remains API-cost-free.
 - [ ] Publish a reproducible demo with sample input, command, output, and operator interpretation.
 - [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
 - [ ] Run the live provider smoke test when an API key and a suitable low-cost model are available.
