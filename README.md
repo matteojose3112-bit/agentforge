@@ -10,7 +10,7 @@ AgentForge keeps orchestration in Go and puts model providers behind a small int
 
 ## Current project status
 
-The v0.3.0 runtime and local business-analysis examples are implemented. The next milestone is to turn these foundations into a reliable, demonstrable AI Sales Operations Assistant: an agent workflow that can interpret a CRM pipeline snapshot, explain performance, identify data or process issues, and prepare useful next-step recommendations.
+The v0.3.0 runtime and local business-analysis examples are implemented. The first v0.4 slice now adds a read-only sales operations report that combines existing CRM pipeline metrics with observations and rule-based review actions. Next priorities are broader evaluation datasets, a guided operator workflow, and full model-loop tests before treating this as a complete assistant.
 
 **What is verified in the repository:** local tool execution paths, deterministic analysis tools, automated tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls.
 
@@ -162,4 +162,4 @@ Keep changes small, typed, testable, and explicit about side effects. See [contr
 
 The repository is at the v0.3.0 implementation baseline. The local CLI, provider abstraction, OpenAI adapter, bounded model/tool loop, schema validation, default-deny permissions, text and CSV analysis, CRM lead-pipeline metrics, synthetic examples, and GitHub Pages project site are present. Automated tests and CI cover local behavior without paid model calls. A real provider-backed tool cycle has not yet been confirmed, so the project is not presented as a verified live AI assistant or production system.
 
-The next development focus is a focused AI Sales Operations Assistant workflow built on the existing CRM analysis capabilities. Initial work should emphasize a deterministic, testable business workflow and evaluation examples before adding persistence, scheduling, dashboards, or more infrastructure.
+The active v0.4 work is a focused AI Sales Operations Assistant built on the existing CRM lead-pipeline analysis capabilities. Its first read-only report slice is implemented; next priorities are broader synthetic evaluation cases, a guided workflow, and full agent-loop testing before considering persistence, scheduling, dashboards, or more infrastructure.
