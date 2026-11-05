@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -55,5 +56,30 @@ func TestRunRequiresExplicitModelIDInAgentMode(t *testing.T) {
 	err = run([]string{"-agent", "-prompt", "analyze this"}, output)
 	if err == nil || !strings.Contains(err.Error(), "missing -model") {
 		t.Fatalf("run() error = %v, want missing-model error", err)
+	}
+}
+
+func TestPortfolioLeadPipelineFixture(t *testing.T) {
+	inputPath := filepath.Join("..", "..", "examples", "lead_pipeline.json")
+	output, err := os.CreateTemp(t.TempDir(), "output")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer output.Close()
+
+	if err := run([]string{"-tool", "csv_analyze", "-input-file", inputPath}, output); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := output.Seek(0, io.SeekStart); err != nil {
+		t.Fatal(err)
+	}
+	result, err := io.ReadAll(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, expected := range []string{`"rows":8`, `"missing_values":2`, `"mean":9100`} {
+		if !strings.Contains(string(result), expected) {
+			t.Errorf("portfolio fixture output missing %s: %s", expected, result)
+		}
 	}
 }
