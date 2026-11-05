@@ -40,7 +40,7 @@ func run(args []string, out *os.File) error {
 		_, err := fmt.Fprintln(out, version)
 		return err
 	}
-	registeredTools := []agent.Tool{tools.Echo{}, tools.TextAnalyze{}, tools.CSVAnalyze{}, tools.LeadPipelineAnalyze{}}
+	registeredTools := []agent.Tool{tools.Echo{}, tools.TextAnalyze{}, tools.CSVAnalyze{}, tools.LeadPipelineAnalyze{}, tools.SalesOpsReport{}}
 	if *agentMode {
 		if strings.TrimSpace(*prompt) == "" {
 			return fmt.Errorf("missing -prompt for agent mode")
