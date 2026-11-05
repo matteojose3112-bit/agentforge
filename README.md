@@ -66,7 +66,7 @@ PowerShell:
 ```powershell
 $env:OPENAI_API_KEY = "your-api-key"
 go run ./cmd/agentforge -agent `
-  -model gpt-6-luna `
+  -model your-supported-model-id `
   -prompt "Use the echo tool to repeat hello AgentForge" `
   -allow-permission tool.echo
 ```
