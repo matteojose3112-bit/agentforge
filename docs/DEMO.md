@@ -41,11 +41,13 @@ go run ./cmd/agentforge -tool text_analyze -input '{"text":"A small business can
 
 It returns JSON containing word count, Unicode character count, line count, and an estimated reading time. The tool accepts up to 256 KiB of text per call.
 
-Analyze a small CSV without an API key:
+Analyze a synthetic CRM lead-pipeline export without an API key:
 
 ```bash
-go run ./cmd/agentforge -tool csv_analyze -input '{"csv":"name,amount\\nAlpha,10\\nBeta,20\\n"}'
+go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.json
 ```
+
+The JSON input file contains the CSV payload, so you do not need to escape newlines or pass a long string through the shell. See [PORTFOLIO.md](PORTFOLIO.md) for the full scenario, expected output, and operator interpretation.
 
 CSV analysis reports data rows, columns, header names, missing cells, and min/max/mean for columns whose non-empty values are all numeric. It accepts CSV input up to 1 MiB, 10,000 data rows, and 100 columns; the first record must be a unique, non-empty header row.
 
@@ -68,7 +70,7 @@ Linux/macOS:
 ```bash
 export OPENAI_API_KEY="your-api-key"
 go run ./cmd/agentforge -agent \
-  -model gpt-6-luna \
+  -model your-supported-model-id \
   -prompt "Use the echo tool to repeat hello AgentForge" \
   -allow-permission tool.echo
 ```
@@ -85,7 +87,7 @@ go run ./cmd/agentforge -agent `
 
 The model can request the registered `echo`, `text_analyze`, or `csv_analyze` function. AgentForge validates the arguments and the matching permission before execution, returns the tool output to the model, and prints the model's final response. Exact wording is model-generated and will vary.
 
-To choose a different API model, pass its exact supported model ID with `-model`. The default is `gpt-6-luna`.
+Agent mode requires an explicit `-model` value. Pass a model ID supported by your OpenAI API account; AgentForge does not assume a default model ID.
 
 ## 4. Check the permission boundary
 
@@ -99,8 +101,8 @@ You can verify the default-deny behavior by omitting `-allow-permission tool.ech
 | --- | --- |
 | `-version` | Print the CLI version |
 | `-tool` | Select a registered tool in direct mode |
-| `-input` | Input for direct tool mode |
-| `-agent` | Enable model-backed agent mode |
+| `-input` | JSON input for direct tool mode |
+| `-input-file` | Read direct tool JSON input from a file |\n| `-agent` | Enable model-backed agent mode |
 | `-prompt` | User prompt for agent mode |
 | `-model` | API model ID |
 | `-timeout` | Optional execution timeout, e.g. `30s` |
