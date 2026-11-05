@@ -112,6 +112,6 @@ Expected key metrics:
 
 The win rate is calculated as won leads divided by closed leads (won + lost), not won leads divided by all leads. Open pipeline value includes only records with a non-empty status that is not mapped as won or lost. Values with missing statuses contribute to total estimated value but are not assigned to an outcome bucket.
 
-The tool defaults to common status labels (`won`, `closed won`, `lost`, and `closed lost`) and accepts explicit `won_statuses` and `lost_statuses` arrays for a CRM's own terminology. Status matching is case-insensitive. If no source column is supplied, source breakdown is empty.
+The tool defaults to common status labels (`won`, `closed won`, `lost`, and `closed lost`) when the `won_statuses` and `lost_statuses` arrays are empty; pass explicit arrays for a CRM's own terminology. Status matching is case-insensitive. Set `source_column` to an empty string to skip source breakdown; missing-source counts are only meaningful when a source column is configured.
 
 This adds a real operational calculation to the generic CSV profile: an operator can inspect both data completeness and a basic funnel snapshot before a weekly review. It remains a deterministic summary, not a forecast or a substitute for validating the CRM's stage definitions and financial data.
