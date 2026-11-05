@@ -79,12 +79,16 @@ go build -o agentforge.exe ./cmd/agentforge
 
 ## 3. Run the model-backed agent (API usage may be billed)
 
-Set the key in your current shell. Do not paste it into source code, command history, screenshots, or GitHub.
+Start with the tracked [`.env.example`](../.env.example): copy it to `.env` and replace the placeholder with your key. The real `.env` file is ignored by Git. AgentForge reads the key from the process environment and does not automatically load dotenv files.
+
+Load it into your current shell. Do not paste it into source code, command history, screenshots, or GitHub.
 
 Linux/macOS:
 
 ```bash
-export OPENAI_API_KEY="your-api-key"
+set -a
+source ./.env
+set +a
 go run ./cmd/agentforge -agent \
   -model your-supported-model-id \
   -prompt "Use the echo tool to repeat hello AgentForge" \
@@ -94,7 +98,7 @@ go run ./cmd/agentforge -agent \
 PowerShell:
 
 ```powershell
-$env:OPENAI_API_KEY = "your-api-key"
+$env:OPENAI_API_KEY = (Get-Content .env | Where-Object { $_ -match '^OPENAI_API_KEY=' } | Select-Object -First 1) -replace '^OPENAI_API_KEY=', ''
 go run ./cmd/agentforge -agent `
   -model your-supported-model-id `
   -prompt "Use the echo tool to repeat hello AgentForge" `
