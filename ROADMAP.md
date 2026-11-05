@@ -16,6 +16,8 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Add tests for failures, cancellation, timeout, and retry behavior.
 
 ## v0.3 — Model and tool integration (implemented; live validation outstanding)
+- [x] Improve CLI help with mode descriptions, flag guidance, safety defaults, and runnable examples.
+- [x] Add automated coverage for help output and successful help exit behavior.
 - [x] Define a vendor-independent model provider interface.
 - [x] Add an OpenAI Responses API provider with environment-based credentials.
 - [x] Add JSON Schema validation for tool inputs and outputs.
@@ -100,5 +102,7 @@ Last reviewed: 2026-11-05
 **Implemented baseline:** v0.3.0 local runtime and CRM analysis capabilities.
 
 **Outstanding validation:** live provider-backed model/tool smoke test and release-candidate evidence.
+
+**Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, and direct/agent-mode examples.
 
 **Active development target:** v0.4 AI Sales Operations Assistant, starting with workflow definition, synthetic evaluation datasets, and deterministic acceptance criteria. The immediate objective is a demonstrable, read-only business workflow built on the existing code—not premature persistence or infrastructure.
