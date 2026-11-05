@@ -10,19 +10,19 @@ import (
 )
 
 func leadPipelineInput(csv, statusColumn, valueColumn, sourceColumn string, won, lost []string) string {
+	if won == nil {
+		won = []string{}
+	}
+	if lost == nil {
+		lost = []string{}
+	}
 	input := map[string]any{
 		"csv": csv,
 		"status_column": statusColumn,
 		"value_column": valueColumn,
-	}
-	if sourceColumn != "" {
-		input["source_column"] = sourceColumn
-	}
-	if won != nil {
-		input["won_statuses"] = won
-	}
-	if lost != nil {
-		input["lost_statuses"] = lost
+		"source_column": sourceColumn,
+		"won_statuses": won,
+		"lost_statuses": lost,
 	}
 	encoded, _ := json.Marshal(input)
 	return string(encoded)
@@ -33,6 +33,9 @@ func TestLeadPipelineAnalyzeSummarizesCRMExport(t *testing.T) {
 		"source,stage,value\nGoogle Ads,Won,100\nReferral,Lost,50\nAngi,Qualified,25\n,New,\n",
 		"stage", "value", "source", []string{"Won"}, []string{"Lost"},
 	)
+	if err := agent.ValidateJSON((LeadPipelineAnalyze{}).Definition().Parameters, []byte(input)); err != nil {
+		t.Fatalf("input does not match declared schema: %v", err)
+	}
 	output, err := (LeadPipelineAnalyze{}).Execute(context.Background(), input)
 	if err != nil {
 		t.Fatal(err)
