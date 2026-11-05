@@ -41,7 +41,7 @@ func run(args []string, out *os.File) error {
 		return err
 	}
 	if *showVersion {
-		_, err := fmt.Fprintf(out, "AgentForge %s\\nCommit: %s\\nBuilt: %s\\n", version, commit, buildDate)
+		_, err := fmt.Fprintf(out, "AgentForge %s\nCommit: %s\nBuilt: %s\n", version, commit, buildDate)
 		return err
 	}
 	registeredTools := []agent.Tool{tools.Echo{}, tools.TextAnalyze{}, tools.CSVAnalyze{}, tools.LeadPipelineAnalyze{}, tools.SalesOpsReport{}}
