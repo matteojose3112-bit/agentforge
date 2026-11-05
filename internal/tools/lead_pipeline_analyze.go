@@ -142,6 +142,9 @@ func (LeadPipelineAnalyze) Execute(_ context.Context, input string) (string, err
 			return "", fmt.Errorf("source column %q was not found", args.SourceColumn)
 		}
 	}
+	if statusIndex == valueIndex || (sourceIndex >= 0 && (sourceIndex == statusIndex || sourceIndex == valueIndex)) {
+		return "", errors.New("status, value, and source columns must be distinct")
+	}
 
 	result := leadPipelineResult{
 		StatusBreakdown: make([]leadPipelineBreakdown, 0),
