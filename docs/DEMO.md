@@ -111,19 +111,28 @@ The runtime denies tool calls by default. The model-backed command above explici
 
 You can verify the default-deny behavior by omitting `-allow-permission tool.echo`. This still makes a model API request and may incur a small charge, but AgentForge should reject the requested tool call rather than execute it.
 
-## 5. CLI reference
+## 5. CLI help and reference
+
+Print the built-in help at any time without running a tool or making an API request:
+
+```bash
+go run ./cmd/agentforge -h
+```
+
+For a compiled binary, use `./agentforge -h` (PowerShell: `./agentforge.exe -h`). The help output groups the direct and agent modes, lists flags and defaults, explains the default-deny permission behavior, and includes copyable examples. Both `-h` and `-help` are supported and exit successfully.
+
 
 | Flag | Purpose |
 | --- | --- |
-| `-version` | Print the CLI version |
-| `-tool` | Select a registered tool in direct mode |
-| `-input` | JSON input for direct tool mode |
-| `-input-file` | Read direct tool JSON input from a file |
+| `-version` | Print the CLI version, Git commit, and build timestamp |
+| `-tool` | Select a registered tool in direct mode (default: `echo`) |
+| `-input` | JSON input for direct tool mode; mutually exclusive with `-input-file` |
+| `-input-file` | Read direct tool JSON input from a file; mutually exclusive with `-input` |
 | `-agent` | Enable model-backed agent mode |
 | `-prompt` | User prompt for agent mode |
 | `-model` | API model ID |
 | `-timeout` | Optional execution timeout, e.g. `30s` |
-| `-allow-permission` | Comma-separated permission allow-list; empty means deny all |
+| `-allow-permission` | Comma-separated permission allow-list for agent mode; empty means deny all |
 
 ## 6. What this demo proves — and does not prove
 
