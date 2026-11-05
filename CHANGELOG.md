@@ -3,20 +3,12 @@
 All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
-- Published the AgentForge project landing page on GitHub Pages at https://matteojose3112-bit.github.io/agentforge/.
-- Added the live project-site link near the top of the README and updated the roadmap to record the successful Pages deployment.
-- Added a CRM lead-pipeline analysis tool for configurable won/lost stages, open and closed lead counts, win rate, estimated pipeline values, missing fields, and stage/source breakdowns.
-- Registered lead-pipeline analysis for direct CLI and model-backed agent execution with the dedicated `tool.leads.analyze` permission.
-- Added deterministic tests for stage classification, custom/default status mappings, missing data, numeric validation, and the synthetic CRM case study.
-- Added JSON file input for direct CLI tool execution, avoiding shell-escaping long CSV payloads.
-- Added a synthetic CRM lead-pipeline example and portfolio case study with reproducible expected output.
-- Require an explicit provider-supported model ID in agent mode instead of shipping an unverified default model name.
-- Added a read-only text analysis tool with word, Unicode character, line, and estimated reading-time metrics.
-- Added a bounded CSV analysis tool reporting row/column counts, missing values, and min/max/mean for fully numeric columns.
-- Registered CSV analysis in direct CLI and model-backed agent modes with the dedicated `tool.csv.analyze` permission.
-- Added CSV parser, size, row-count, header, numeric-summary, and agent-loop tests; documented a no-key CSV demo.
-- Registered text analysis in direct CLI and model-backed agent modes, with a dedicated permission string and a 256 KiB input limit.
-- Added unit tests and a no-API-key demo command for the new capability.
+
+### Documentation and project direction — 2026-11-05
+- Reconciled the README with the implemented v0.3.0 repository baseline and explicitly separated automated/local verification from the still-outstanding live provider smoke test.
+- Reworked the roadmap to define v0.4 as a focused, read-only AI Sales Operations Assistant built on the existing CRM pipeline analysis capabilities.
+- Added phased acceptance criteria for synthetic evaluation datasets, grounded recommendations, end-to-end tests, and a reproducible portfolio demonstration.
+- Clarified that persistence, human approval, scheduling, background workers, and UI work remain evidence-driven future scope rather than current capabilities.
 
 ## [0.3.0] — Model and tool integration
 - Added vendor-neutral model, message, tool-call, and provider contracts.
@@ -42,8 +34,6 @@ All notable changes to AgentForge are documented here.
 - Added Makefile commands, GitHub Actions CI, architecture notes, and roadmap.
 
 ## [0.3.1] — Documentation synchronization — 2026-11-03
-
-### Documentation
 - Refreshed README and roadmap to match the implemented v0.3.0 Go runtime, OpenAI Responses adapter, schema validation, and default-deny permissions.
 - Reaffirmed the project's early-stage status, explicit tool permissions, and non-production limitations.
 - Clarified the live API smoke test as the immediate next validation step; persistence and human approval remain future work.
