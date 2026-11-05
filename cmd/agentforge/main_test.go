@@ -144,3 +144,34 @@ func TestRunPrintsVersionAndBuildMetadata(t *testing.T) {
 		}
 	}
 }
+
+func TestRunPrintsHelpAndReturnsSuccess(t *testing.T) {
+	output, err := os.CreateTemp(t.TempDir(), "help")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer output.Close()
+
+	if err := run([]string{"-h"}, output); err != nil {
+		t.Fatalf("run(-h) error = %v, want nil", err)
+	}
+	if _, err := output.Seek(0, io.SeekStart); err != nil {
+		t.Fatal(err)
+	}
+	result, err := io.ReadAll(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, expected := range []string{
+		"AgentForge - controlled tool execution",
+		"Direct tool mode",
+		"Agent mode",
+		"-allow-permission",
+		"Examples:",
+		"OPENAI_API_KEY",
+	} {
+		if !strings.Contains(string(result), expected) {
+			t.Errorf("help output missing %q: %s", expected, result)
+		}
+	}
+}
