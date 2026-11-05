@@ -49,6 +49,14 @@ go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.jso
 
 The JSON input file contains the CSV payload, so you do not need to escape newlines or pass a long string through the shell. See [PORTFOLIO.md](PORTFOLIO.md) for the full scenario, expected output, and operator interpretation.
 
+Run the business-specific lead pipeline analysis on the same fictional CRM export:
+
+```bash
+go run ./cmd/agentforge -tool lead_pipeline_analyze -input-file examples/lead_pipeline_analysis.json
+```
+
+The tool reports won, lost, and open leads; win rate among closed leads; estimated values by outcome; missing fields; and optional stage/source breakdowns. Won/lost stage names can be configured in the input file.
+
 CSV analysis reports data rows, columns, header names, missing cells, and min/max/mean for columns whose non-empty values are all numeric. It accepts CSV input up to 1 MiB, 10,000 data rows, and 100 columns; the first record must be a unique, non-empty header row.
 
 On PowerShell, the built executable is `agentforge.exe`:
@@ -85,13 +93,13 @@ go run ./cmd/agentforge -agent `
   -allow-permission tool.echo
 ```
 
-The model can request the registered `echo`, `text_analyze`, or `csv_analyze` function. AgentForge validates the arguments and the matching permission before execution, returns the tool output to the model, and prints the model's final response. Exact wording is model-generated and will vary.
+The model can request the registered `echo`, `text_analyze`, `csv_analyze`, or `lead_pipeline_analyze` function. AgentForge validates the arguments and the matching permission before execution, returns the tool output to the model, and prints the model's final response. Exact wording is model-generated and will vary.
 
 Agent mode requires an explicit `-model` value. Pass a model ID supported by your OpenAI API account; AgentForge does not assume a default model ID.
 
 ## 4. Check the permission boundary
 
-The runtime denies tool calls by default. The model-backed command above explicitly grants only `tool.echo`. To let the agent analyze text, grant `tool.text.analyze`; to analyze CSV data, grant `tool.csv.analyze` as well.
+The runtime denies tool calls by default. The model-backed command above explicitly grants only `tool.echo`. To let the agent analyze text, grant `tool.text.analyze`; to analyze CSV data, grant `tool.csv.analyze`; to analyze CRM pipeline data, grant `tool.leads.analyze` as well.
 
 You can verify the default-deny behavior by omitting `-allow-permission tool.echo`. This still makes a model API request and may incur a small charge, but AgentForge should reject the requested tool call rather than execute it.
 
@@ -111,6 +119,6 @@ You can verify the default-deny behavior by omitting `-allow-permission tool.ech
 
 ## 6. What this demo proves — and does not prove
 
-It demonstrates one model provider, three local tools, a bounded model/tool loop, schema validation, and explicit permissions. The text- and CSV-analysis tools can also be exercised locally without a model API key. It does not demonstrate persistent conversations, durable task storage, human approval workflows, background jobs, multi-agent coordination, or production-grade sandboxing.
+It demonstrates one model provider, four local tools, a bounded model/tool loop, schema validation, and explicit permissions. The text- and CSV-analysis tools can also be exercised locally without a model API key. It does not demonstrate persistent conversations, durable task storage, human approval workflows, background jobs, multi-agent coordination, or production-grade sandboxing.
 
 The automated test suite uses a local HTTP test server; CI does not make paid model calls. A successful local test run is not a substitute for recording a successful live API smoke test.
