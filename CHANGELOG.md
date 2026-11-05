@@ -4,6 +4,10 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Configuration and credential safety
+- Added a placeholder-only `.env.example` for `OPENAI_API_KEY`; the real `.env` remains ignored by Git.
+- Documented shell-specific ways to load the environment variable and clarified that AgentForge does not automatically parse dotenv files.
+
 ### CLI usability
 - Replaced the minimal flag listing with structured CLI help covering direct and agent modes, usage examples, required environment configuration, mutually exclusive input options, and default-deny permissions.
 - Improved individual flag descriptions and made `-h`/`-help` return successfully after printing help.
