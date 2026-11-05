@@ -10,6 +10,12 @@ All notable changes to AgentForge are documented here.
 - Added phased acceptance criteria for synthetic evaluation datasets, grounded recommendations, end-to-end tests, and a reproducible portfolio demonstration.
 - Clarified that persistence, human approval, scheduling, background workers, and UI work remain evidence-driven future scope rather than current capabilities.
 
+### v0.4 initial implementation slice — 2026-11-05
+- Added the read-only `sales_ops_report` tool, composing existing CRM pipeline metrics into a concise operations snapshot with observations, data-quality signals, and rule-based follow-up actions.
+- Registered the report in direct CLI and model-backed agent modes behind the dedicated default-deny permission `tool.sales_ops.report`.
+- Added deterministic tests for report schema, metrics, recommendation triggers, missing closed outcomes, and invalid input.
+- Added a synthetic sales operations snapshot and documented its CLI usage, output scope, and limitations.
+
 ### Previously implemented, unreleased changes
 - Published the AgentForge project landing page on GitHub Pages at https://matteojose3112-bit.github.io/agentforge/.
 - Added the live project-site link near the top of the README and updated the roadmap to record the successful Pages deployment.
