@@ -1,19 +1,21 @@
 # Roadmap
 
-## v0.1 — Execution foundation
+AgentForge is being developed in small, verifiable milestones. Checkboxes describe repository implementation status, not aspirations or unverified live behavior.
+
+## v0.1 — Execution foundation <badge>Complete</badge>
 - [x] Establish the Go module and CLI entry point.
 - [x] Define a typed tool contract and registry-backed runner.
 - [x] Add a safe local example tool.
 - [x] Add unit tests and Go CI.
 - [x] Document architecture and development commands.
 
-## v0.2 — Reliable task lifecycle
+## v0.2 — Reliable task lifecycle <badge>Complete</badge>
 - [x] Add structured task IDs, statuses, timestamps, and results.
 - [x] Add execution events and structured logging.
 - [x] Add context-aware timeouts and bounded, opt-in retry policy.
 - [x] Add tests for failures, cancellation, timeout, and retry behavior.
 
-## v0.3 — Model and tool integration
+## v0.3 — Model and tool integration <badge>Implemented</badge>
 - [x] Define a vendor-independent model provider interface.
 - [x] Add an OpenAI Responses API provider with environment-based credentials.
 - [x] Add JSON Schema validation for tool inputs and outputs.
@@ -21,41 +23,80 @@
 - [x] Add bounded model/tool turns and provider adapter tests.
 - [x] Publish a step-by-step local and model-backed demo guide.
 - [x] Document contribution and development expectations.
-- [x] Add a deterministic, read-only text analysis capability with no model/API dependency for local testing.
-- [x] Add bounded CSV analysis for row/column counts, missing values, and numeric summaries, available locally without an API key.
-- [x] Add JSON input-file support and a reproducible synthetic CRM lead-pipeline profiling case study for portfolio review.
+- [x] Add deterministic, read-only text analysis with no model/API dependency.
+- [x] Add bounded CSV analysis for row/column counts, missing values, and numeric summaries.
+- [x] Add JSON input-file support and a reproducible synthetic CRM lead-pipeline case study.
 - [x] Add deterministic CRM pipeline metrics with configurable won/lost stages, closed-lead win rate, pipeline values, and stage/source breakdowns.
-- [x] Publish a static GitHub Pages project site from the repository's `/docs` directory.
-- [ ] Run a live API smoke test after a local API key is configured.
+- [x] Publish the static GitHub Pages project site from the repository's `/docs` directory.
+- [ ] Run and record a live provider-backed model/tool smoke test using a locally configured API key.
 
-## Release acceptance checklist
-- [x] Local no-key path documented.
+### v0.3 validation / release gate
+- [x] Local no-key execution paths and commands documented.
 - [x] Model-backed happy path documented.
-- [x] Default-deny permission behavior documented.
-- [x] CI workflow runs tests, vet, and CLI build.
-- [x] Public GitHub Pages site deployed and verified.
-- [ ] Confirm the live model/tool cycle with a locally configured API key.
-- [ ] Record the live smoke-test result and tag the first release candidate.
+- [x] Default-deny permission behavior documented and covered by tests.
+- [x] CI workflow runs tests, vet, and CLI build without paid model calls.
+- [x] Public GitHub Pages site deployed.
+- [ ] Confirm a real model response that requests a registered tool, passes validation and permission checks, executes, and returns a final response.
+- [ ] Record provider/model/date and outcome of the live smoke test; do not publish credentials or sensitive output.
+- [ ] Tag a release candidate only after the live validation gate is complete.
 
-## v0.4 — Persistence and human control
-- [ ] Define a storage interface for task state and memory.
-- [ ] Add a human-approval checkpoint for sensitive actions.
+## v0.4 — AI Sales Operations Assistant (next milestone)
+
+**Goal:** turn the existing CRM pipeline analyzer into a credible, repeatable business workflow that produces useful operational insight—not simply add another generic tool.
+
+### Phase 1 — Define the workflow and evidence
+- [ ] Define the target user, input format, business questions, and expected report structure.
+- [ ] Create representative synthetic CRM datasets covering healthy, weak, incomplete, and edge-case pipelines.
+- [ ] Define deterministic acceptance criteria for every metric and recommendation.
+- [ ] Document the boundary between calculated facts, model-generated interpretation, and suggested actions.
+
+### Phase 2 — Build the assistant workflow
+- [ ] Compose existing CSV/lead-pipeline analysis into a single guided workflow.
+- [ ] Generate a concise sales-operations report: pipeline snapshot, conversion signals, data-quality issues, and follow-up priorities.
+- [ ] Make recommendations traceable to the input metrics; avoid inventing causes or unsupported forecasts.
+- [ ] Keep all tools read-only initially; no CRM writes, emails, or external side effects.
+- [ ] Preserve default-deny permissions and bounded execution.
+
+### Phase 3 — Evaluate and demonstrate
+- [ ] Add repeatable evaluation fixtures for expected metrics, grounded recommendations, malformed input, and permission denial.
+- [ ] Add tests for the end-to-end workflow using a fake/local provider so CI remains API-cost-free.
+- [ ] Publish a reproducible demo with sample input, command, output, and operator interpretation.
+- [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
+- [ ] Run the live provider smoke test when an API key and a suitable low-cost model are available.
+
+### Phase 4 — Human control and state (only after the workflow proves useful)
+- [ ] Design an approval interface/checkpoint before introducing any action with external side effects.
+- [ ] Define a storage interface only when conversation or task continuity is a demonstrated requirement.
 - [ ] Evaluate PostgreSQL only when durable multi-run state is needed.
 
-## Later / evidence-driven
-- [ ] Add workflow composition and scheduling.
-- [ ] Add evaluation fixtures and repeatable agent benchmarks.
+## Later — evidence-driven
+- [ ] Add workflow composition and scheduling when a concrete use case requires them.
 - [ ] Add background workers only when asynchronous workloads justify them.
+- [ ] Consider additional model providers behind the existing provider interface.
+- [ ] Consider a user interface only after the CLI workflow is reliable and useful.
 
-## Non-goals for the initial milestones
+## Release and quality principles
+- Do not describe the project as production-ready or fully autonomous.
+- Do not claim a live model/tool cycle has passed until its result is recorded.
+- Keep business calculations deterministic and testable; use the model for explanation and grounded recommendations.
+- Keep synthetic/demo data clearly labeled; never imply it is real client data.
+- Keep tools read-only until a human approval design and explicit action permissions exist.
+- Avoid adding a database, queue, dashboard, or multi-agent architecture without evidence that the workflow needs it.
+
+## Non-goals for the current milestone
 - No web dashboard.
-- No multi-agent framework before single-agent execution is reliable.
+- No multi-agent framework.
+- No autonomous CRM updates, outbound messages, or other external actions.
 - No mandatory database, queue, or hosted model dependency.
 
 ---
 
 Last reviewed: 2026-11-05
 
-## Current direction — 2026-11-05
+## Current direction
 
-**v0.3.0 foundation implemented · Early-stage, not production-ready.** The local runtime now includes deterministic text and CSV analysis capabilities, JSON input-file support, and reproducible CRM lead-pipeline profiling and funnel-analysis cases that can be tested without a model API key. The public project landing page is live at [matteojose3112-bit.github.io/agentforge](https://matteojose3112-bit.github.io/agentforge/). Prioritize portfolio-grade examples, test coverage, and clear limitations before adding more generic tools. Do not tag a release candidate until the model/tool cycle and default-deny boundary have been verified. Keep persistence, human approval, workflow composition, scheduling, and benchmarks evidence-driven; do not add a database, queue, dashboard, or multi-agent layer before the single-agent runtime has demonstrated a need.
+**Implemented baseline:** v0.3.0 local runtime and CRM analysis capabilities.
+
+**Outstanding validation:** live provider-backed model/tool smoke test and release-candidate evidence.
+
+**Active development target:** v0.4 AI Sales Operations Assistant, starting with workflow definition, synthetic evaluation datasets, and deterministic acceptance criteria. The immediate objective is a demonstrable, read-only business workflow built on the existing code—not premature persistence or infrastructure.
