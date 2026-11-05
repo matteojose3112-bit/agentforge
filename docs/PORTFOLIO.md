@@ -115,3 +115,15 @@ The win rate is calculated as won leads divided by closed leads (won + lost), no
 The tool defaults to common status labels (`won`, `closed won`, `lost`, and `closed lost`) when the `won_statuses` and `lost_statuses` arrays are empty; pass explicit arrays for a CRM's own terminology. Status matching is case-insensitive. Set `source_column` to an empty string to skip source breakdown; missing-source counts are only meaningful when a source column is configured.
 
 This adds a real operational calculation to the generic CSV profile: an operator can inspect both data completeness and a basic funnel snapshot before a weekly review. It remains a deterministic summary, not a forecast or a substitute for validating the CRM's stage definitions and financial data.
+
+## Sales operations report
+
+The first v0.4 workflow composes the pipeline analyzer into a concise, read-only operations report:
+
+```bash
+go run ./cmd/agentforge -tool sales_ops_report -input-file examples/sales_ops_snapshot.json
+```
+
+The report carries forward the calculated lead counts, closed-lead win rate, open pipeline value, and missing-field counts. It adds plain-language observations and rule-based review actions for open leads, incomplete stage/value/source data, and closed outcomes. Its limitations are included in the JSON output: it describes one supplied snapshot, does not forecast or benchmark performance, does not rank individual leads, and does not modify a CRM or contact customers.
+
+The example input is synthetic. The report's recommendations are deliberately conservative prompts for an operator to investigate, not claims that a particular business process is failing.
