@@ -66,7 +66,7 @@ These are descriptive data-quality and numeric summaries, not CRM performance co
 1. A user can provide a JSON input file instead of manually escaping a CSV string in a shell command.
 2. The CLI resolves a registered capability through the typed tool runner.
 3. The CSV tool enforces input, row, and column limits; validates UTF-8, headers, and row shape; and parses quoted CSV fields.
-4. The result is deterministic JSON that can be inspected, tested, or passed to a model-backed workflow.
+4. The result is deterministic JSON that can be inspected, tested, or passed to a model-backed workflow. The CRM-specific tool can also calculate funnel counts, win rate, and value totals when the stage and value columns are mapped explicitly.
 5. In agent mode, the same capability is exposed only when the application grants `tool.csv.analyze`.
 
 ## Scope and safety
@@ -79,4 +79,39 @@ These are descriptive data-quality and numeric summaries, not CRM performance co
 
 ## Current limitations
 
-This is a small, deterministic CSV profiling example. It is not a complete CRM analytics product, does not persist runs, and does not calculate business-specific funnel metrics. A live model-backed tool cycle remains a separate validation step requiring a locally configured API key and a model ID supported by that API account.
+These are small, deterministic data-profiling and pipeline-summary examples. They are not a complete CRM analytics product, do not persist runs, and do not forecast future revenue or infer stage probabilities. A live model-backed tool cycle remains a separate validation step requiring a locally configured API key and a model ID supported by that API account.
+
+
+## Business-specific pipeline metrics
+
+The same sample export can be passed to the CRM-specific analysis tool. Its input explicitly maps the CRM stage and estimated-value columns and declares which stages count as won or lost:
+
+```bash
+go run ./cmd/agentforge -tool lead_pipeline_analyze -input-file examples/lead_pipeline_analysis.json
+```
+
+Expected key metrics:
+
+```json
+{
+  "total_leads": 8,
+  "won_leads": 1,
+  "lost_leads": 1,
+  "open_leads": 6,
+  "closed_leads": 2,
+  "win_rate_percent": 50,
+  "missing_statuses": 0,
+  "missing_values": 1,
+  "missing_sources": 0,
+  "total_estimated_value": 63700,
+  "open_pipeline_value": 44500,
+  "won_value": 4200,
+  "lost_value": 15000
+}
+```
+
+The win rate is calculated as won leads divided by closed leads (won + lost), not won leads divided by all leads. Open pipeline value includes only records with a non-empty status that is not mapped as won or lost. Values with missing statuses contribute to total estimated value but are not assigned to an outcome bucket.
+
+The tool defaults to common status labels (`won`, `closed won`, `lost`, and `closed lost`) when the `won_statuses` and `lost_statuses` arrays are empty; pass explicit arrays for a CRM's own terminology. Status matching is case-insensitive. Set `source_column` to an empty string to skip source breakdown; missing-source counts are only meaningful when a source column is configured.
+
+This adds a real operational calculation to the generic CSV profile: an operator can inspect both data completeness and a basic funnel snapshot before a weekly review. It remains a deterministic summary, not a forecast or a substitute for validating the CRM's stage definitions and financial data.

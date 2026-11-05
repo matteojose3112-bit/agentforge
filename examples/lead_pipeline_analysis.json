@@ -1,0 +1,8 @@
+{
+  "csv": "lead_id,source,stage,estimated_value,days_to_first_response,owner\nL-1001,Google Ads,New,8500,1,Ana\nL-1002,Referral,Qualified,12000,2,Diego\nL-1003,Angi,Contacted,6500,4,Ana\nL-1004,Google Ads,Proposal,10000,1,Diego\nL-1005,Referral,New,,3,Ana\nL-1006,Angi,Won,4200,,Diego\nL-1007,Google Ads,Lost,15000,2,Ana\nL-1008,Referral,Qualified,7500,5,Diego\n",
+  "status_column": "stage",
+  "value_column": "estimated_value",
+  "source_column": "source",
+  "won_statuses": ["Won"],
+  "lost_statuses": ["Lost"]
+}

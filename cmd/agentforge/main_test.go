@@ -83,3 +83,38 @@ func TestPortfolioLeadPipelineFixture(t *testing.T) {
 		}
 	}
 }
+
+func TestLeadPipelineAnalysisPortfolioFixture(t *testing.T) {
+	inputPath := filepath.Join("..", "..", "examples", "lead_pipeline_analysis.json")
+	output, err := os.CreateTemp(t.TempDir(), "output")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer output.Close()
+
+	if err := run([]string{"-tool", "lead_pipeline_analyze", "-input-file", inputPath}, output); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := output.Seek(0, io.SeekStart); err != nil {
+		t.Fatal(err)
+	}
+	result, err := io.ReadAll(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, expected := range []string{
+		`"total_leads":8`,
+		`"won_leads":1`,
+		`"lost_leads":1`,
+		`"open_leads":6`,
+		`"win_rate_percent":50`,
+		`"total_estimated_value":63700`,
+		`"open_pipeline_value":44500`,
+	} {
+		if !strings.Contains(string(result), expected) {
+			t.Errorf("lead pipeline fixture output missing %s: %s", expected, result)
+		}
+	}
+}
+
+

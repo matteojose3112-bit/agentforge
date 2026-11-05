@@ -3,6 +3,9 @@
 All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
+- Added a CRM lead-pipeline analysis tool for configurable won/lost stages, open and closed lead counts, win rate, estimated pipeline values, missing fields, and stage/source breakdowns.
+- Registered lead-pipeline analysis for direct CLI and model-backed agent execution with the dedicated `tool.leads.analyze` permission.
+- Added deterministic tests for stage classification, custom/default status mappings, missing data, numeric validation, and the synthetic CRM case study.
 - Added JSON file input for direct CLI tool execution, avoiding shell-escaping long CSV payloads.
 - Added a synthetic CRM lead-pipeline example and portfolio case study with reproducible expected output.
 - Require an explicit provider-supported model ID in agent mode instead of shipping an unverified default model name.

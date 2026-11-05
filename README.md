@@ -25,6 +25,7 @@ AgentForge keeps orchestration in Go and puts model providers behind a small int
 - Local echo tool for a complete first tool-call cycle.
 - Read-only text analysis tool for word, Unicode character, line, and estimated reading-time metrics.
 - Bounded CSV analysis for row/column counts, missing cells, and numeric-column summaries.
+- CRM lead-pipeline analysis for won/lost/open counts, closed-lead win rate, pipeline value, missing fields, and stage/source breakdowns.
 - Unit tests, Go vet, and GitHub Actions CI.
 
 ## Quick start
@@ -39,6 +40,7 @@ go test ./...
 go vet ./...
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.json
+go run ./cmd/agentforge -tool lead_pipeline_analyze -input-file examples/lead_pipeline_analysis.json
 ```
 
 Expected output:
@@ -71,7 +73,7 @@ go run ./cmd/agentforge -agent `
   -allow-permission tool.echo
 ```
 
-Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, and CSV analysis tools.
+Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling, and CRM lead-pipeline analysis tools.
 
 See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data.
 
@@ -126,7 +128,7 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 - Model/tool turns are bounded and provider calls inherit context cancellation.
 - Requests use `store:false`; this does not replace reviewing the provider's applicable data-processing and retention terms.
 - Only OpenAI is implemented today; the provider interface is vendor-neutral.
-- Agent mode includes local echo, text analysis, and CSV analysis tools. Text analysis accepts at most 256 KiB per call; CSV analysis accepts at most 1 MiB, 10,000 data rows, and 100 columns.
+- Agent mode includes local echo, text analysis, CSV profiling, and CRM lead-pipeline analysis tools. Text analysis accepts at most 256 KiB per call; CSV tools accept at most 1 MiB, 10,000 data rows, and 100 columns.
 - Persistent conversation history, durable task storage, human approval workflows, background workers, and production security review are not implemented.
 - CI does not call a paid live model API. The live smoke test remains a local release check.
 
@@ -146,4 +148,4 @@ Keep changes small, typed, testable, and explicit about side effects. See [contr
 
 ## Documentation review — 2026-11-05
 
-AgentForge remains an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo, text analysis, CSV analysis, and file-based direct input are implemented. The repository includes a synthetic CRM lead-pipeline case study that runs without an API key. Tests, vet, and CLI build run in CI without paid API calls. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.
+AgentForge remains an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo, text analysis, CSV analysis, and file-based direct input are implemented. The repository includes synthetic CRM lead-pipeline profiling and funnel-analysis examples that run without an API key. Tests, vet, and CLI build run in CI without paid API calls. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.
