@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/matteojose3112-bit/agentforge/internal/agent"
@@ -165,5 +166,73 @@ func TestAgentExecutesPermittedCSVAnalysisTool(t *testing.T) {
 	}
 	if toolResult.Rows != 2 || toolResult.Columns != 2 {
 		t.Fatalf("unexpected CSV tool result: %+v", toolResult)
+	}
+}
+
+func TestAgentExecutesPermittedLeadPipelineAnalysisTool(t *testing.T) {
+	csvInput := "source,stage,value\nGoogle Ads,Won,100\nReferral,Open,50\nGoogle Ads,Lost,25\n"
+	arguments, err := json.Marshal(map[string]any{
+		"csv": csvInput,
+		"status_column": "stage",
+		"value_column": "value",
+		"source_column": "source",
+		"won_statuses": []string{"Won"},
+		"lost_statuses": []string{"Lost"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "call-leads-1", Name: "lead_pipeline_analyze", Arguments: arguments}}},
+		{Text: "The pipeline has three leads and a 50% closed-lead win rate."},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{"tool.leads.analyze": true}, 2, tools.LeadPipelineAnalyze{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := runner.Run(context.Background(), "Analyze this CRM pipeline.")
+	if err != nil || result != "The pipeline has three leads and a 50% closed-lead win rate." {
+		t.Fatalf("Run() = %q, %v", result, err)
+	}
+	if len(provider.requests) != 2 || len(provider.requests[0].Tools) != 1 || provider.requests[0].Tools[0].Name != "lead_pipeline_analyze" {
+		t.Fatalf("provider requests = %#v", provider.requests)
+	}
+	var toolResult struct {
+		TotalLeads int `json:"total_leads"`
+		WonLeads int `json:"won_leads"`
+		LostLeads int `json:"lost_leads"`
+		OpenLeads int `json:"open_leads"`
+		WinRatePercent float64 `json:"win_rate_percent"`
+		OpenPipelineValue float64 `json:"open_pipeline_value"`
+	}
+	if err := json.Unmarshal([]byte(provider.requests[1].Messages[2].Content), &toolResult); err != nil {
+		t.Fatal(err)
+	}
+	if toolResult.TotalLeads != 3 || toolResult.WonLeads != 1 || toolResult.LostLeads != 1 || toolResult.OpenLeads != 1 || toolResult.WinRatePercent != 50 || toolResult.OpenPipelineValue != 50 {
+		t.Fatalf("unexpected lead pipeline tool result: %+v", toolResult)
+	}
+}
+
+func TestAgentDeniesLeadPipelineAnalysisWithoutPermission(t *testing.T) {
+	arguments, err := json.Marshal(map[string]any{
+		"csv": "stage,value\nWon,100\n",
+		"status_column": "stage",
+		"value_column": "value",
+		"source_column": "",
+		"won_statuses": []string{},
+		"lost_statuses": []string{},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "call-leads-denied", Name: "lead_pipeline_analyze", Arguments: arguments}}},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{}, 2, tools.LeadPipelineAnalyze{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := runner.Run(context.Background(), "Analyze this CRM pipeline."); err == nil || !strings.Contains(err.Error(), "permission denied") {
+		t.Fatalf("Run() error = %v, want permission denial", err)
 	}
 }
