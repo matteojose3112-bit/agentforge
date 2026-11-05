@@ -36,6 +36,7 @@ The v0.3.0 runtime and local business-analysis examples are implemented. The nex
 - Read-only text analysis tool for word, Unicode character, line, and estimated reading-time metrics.
 - Bounded CSV analysis for row/column counts, missing cells, and numeric-column summaries.
 - CRM lead-pipeline analysis for won/lost/open counts, closed-lead win rate, pipeline value, missing fields, and stage/source breakdowns.
+- Read-only sales operations report combining deterministic pipeline metrics with rule-based observations and follow-up recommendations.
 - Unit tests, Go vet, and GitHub Actions CI.
 
 ## Quick start
@@ -51,6 +52,7 @@ go vet ./...
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.json
 go run ./cmd/agentforge -tool lead_pipeline_analyze -input-file examples/lead_pipeline_analysis.json
+go run ./cmd/agentforge -tool sales_ops_report -input-file examples/sales_ops_snapshot.json
 ```
 
 Expected output:
@@ -83,7 +85,7 @@ go run ./cmd/agentforge -agent `
   -allow-permission tool.echo
 ```
 
-Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling, and CRM lead-pipeline analysis tools.
+Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling, CRM lead-pipeline analysis, and the sales operations report tools.
 
 See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data.
 
@@ -138,7 +140,7 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 - Model/tool turns are bounded and provider calls inherit context cancellation.
 - Requests use `store:false`; this does not replace reviewing the provider's applicable data-processing and retention terms.
 - Only OpenAI is implemented today; the provider interface is vendor-neutral.
-- Agent mode includes local echo, text analysis, CSV profiling, and CRM lead-pipeline analysis tools. Text analysis accepts at most 256 KiB per call; CSV tools accept at most 1 MiB, 10,000 data rows, and 100 columns.
+- Agent mode includes local echo, text analysis, CSV profiling, CRM lead-pipeline analysis, and sales operations reporting tools. Text analysis accepts at most 256 KiB per call; CSV tools accept at most 1 MiB, 10,000 data rows, and 100 columns.
 - Persistent conversation history, durable task storage, human approval workflows, background workers, and production security review are not implemented.
 - CI does not call a paid live model API. The live smoke test remains a local release check.
 
