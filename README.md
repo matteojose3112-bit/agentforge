@@ -66,22 +66,24 @@ hello AgentForge
 
 ## Run a model-backed agent
 
-The first provider uses the OpenAI Responses API. Set an API key in your local environment; never commit it to the repository.
+The first provider uses the OpenAI Responses API. You can start from the tracked [`.env.example`](.env.example) template. Copy it to `.env`, replace the placeholder, and load the variable into your shell. The `.env` file is ignored by Git. AgentForge reads `OPENAI_API_KEY` from the process environment; it does **not** automatically load dotenv files.
 
-Linux/macOS:
+Linux/macOS (after copying `.env.example` to `.env` and editing it):
 
 ```bash
-export OPENAI_API_KEY="your-api-key"
+set -a
+source ./.env
+set +a
 go run ./cmd/agentforge -agent \
   -model your-supported-model-id \
   -prompt "Use the echo tool to repeat hello AgentForge" \
   -allow-permission tool.echo
 ```
 
-PowerShell:
+PowerShell (after editing .env):
 
 ```powershell
-$env:OPENAI_API_KEY = "your-api-key"
+$env:OPENAI_API_KEY = (Get-Content .env | Where-Object { $_ -match '^OPENAI_API_KEY=' } | Select-Object -First 1) -replace '^OPENAI_API_KEY=', ''
 go run ./cmd/agentforge -agent `
   -model your-supported-model-id `
   -prompt "Use the echo tool to repeat hello AgentForge" `
@@ -139,7 +141,7 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 - Tool arguments are validated before execution and tool outputs before being returned to the model.
 - The supported JSON Schema subset includes object, string, number, integer, boolean, array, enum, required, properties, and `additionalProperties:false`; this is not full JSON Schema.
 - The model cannot register tools or grant itself permissions.
-- API keys are read from environment variables and must not be committed.
+- API keys are read from environment variables and must not be committed. The repository includes a placeholder `.env.example`; the real `.env` file is ignored by Git, and the CLI does not load dotenv files automatically.
 - Model/tool turns are bounded and provider calls inherit context cancellation.
 - Requests use `store:false`; this does not replace reviewing the provider's applicable data-processing and retention terms.
 - Only OpenAI is implemented today; the provider interface is vendor-neutral.
