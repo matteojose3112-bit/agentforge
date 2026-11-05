@@ -146,10 +146,34 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 
 ## Development
 
+Run the local checks and build:
+
 ```bash
 go test ./...
 go vet ./...
 go build ./cmd/agentforge
+```
+
+The CLI's `-version` flag prints the version, Git commit, and build timestamp. Local builds use the version with `unknown` commit/build metadata unless values are supplied through linker flags.
+
+Example release-style build (Linux/macOS):
+
+```bash
+VERSION=0.3.0
+COMMIT=$(git rev-parse --short HEAD)
+BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+go build -ldflags "-X main.version=$VERSION -X main.commit=$COMMIT -X main.buildDate=$BUILD_DATE" -o agentforge ./cmd/agentforge
+./agentforge -version
+```
+
+PowerShell:
+
+```powershell
+$version = "0.3.0"
+$commit = git rev-parse --short HEAD
+$buildDate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+go build -ldflags "-X main.version=$version -X main.commit=$commit -X main.buildDate=$buildDate" -o agentforge.exe ./cmd/agentforge
+.\agentforge.exe -version
 ```
 
 See [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
