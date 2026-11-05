@@ -3,6 +3,8 @@
 All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
+- Published the AgentForge project landing page on GitHub Pages at https://matteojose3112-bit.github.io/agentforge/.
+- Added the live project-site link near the top of the README and updated the roadmap to record the successful Pages deployment.
 - Added a CRM lead-pipeline analysis tool for configurable won/lost stages, open and closed lead counts, win rate, estimated pipeline values, missing fields, and stage/source breakdowns.
 - Registered lead-pipeline analysis for direct CLI and model-backed agent execution with the dedicated `tool.leads.analyze` permission.
 - Added deterministic tests for stage classification, custom/default status mappings, missing data, numeric validation, and the synthetic CRM case study.
