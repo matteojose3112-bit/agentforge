@@ -17,6 +17,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ## v0.3 — Model and tool integration (implemented; live validation outstanding)
 - [x] Improve CLI help with mode descriptions, flag guidance, safety defaults, and runnable examples.
+- [x] Add a safe `.env.example` template and document how to load credentials without committing the real `.env` file.
 - [x] Add automated coverage for help output and successful help exit behavior.
 - [x] Define a vendor-independent model provider interface.
 - [x] Add an OpenAI Responses API provider with environment-based credentials.
@@ -103,6 +104,6 @@ Last reviewed: 2026-11-05
 
 **Outstanding validation:** live provider-backed model/tool smoke test and release-candidate evidence.
 
-**Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, and direct/agent-mode examples.
+**Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, and direct/agent-mode examples. A placeholder-only `.env.example` documents the OpenAI credential variable; the CLI still reads credentials from the process environment and does not auto-load dotenv files.
 
 **Active development target:** v0.4 AI Sales Operations Assistant, starting with workflow definition, synthetic evaluation datasets, and deterministic acceptance criteria. The immediate objective is a demonstrable, read-only business workflow built on the existing code—not premature persistence or infrastructure.
