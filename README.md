@@ -2,6 +2,8 @@
 
 **A lightweight Go runtime for model-driven tool execution and practical workflow automation.**
 
+> **Live project site:** [AgentForge on GitHub Pages](https://matteojose3112-bit.github.io/agentforge/) · **Repository:** [GitHub](https://github.com/matteojose3112-bit/agentforge)
+
 > **Release status:** v0.3.0 — model and tool integration. Early-stage developer foundation; not a production-ready autonomous system.
 
 AgentForge keeps orchestration in Go and puts model providers behind a small interface. Models can request capabilities, but only tools explicitly registered by the application can execute, and permissions are denied unless explicitly granted.
