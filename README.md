@@ -16,7 +16,7 @@ AgentForge keeps orchestration in Go and puts model providers behind a small int
 
 ## What works today
 
-- Go CLI with direct tool mode and model-backed agent mode.
+- Go CLI with direct tool mode, JSON input-file support, and model-backed agent mode.
 - Typed tool registry and task execution lifecycle.
 - Vendor-independent model provider interface.
 - OpenAI Responses API adapter using Go's standard `net/http` client.
@@ -38,7 +38,7 @@ cd agentforge
 go test ./...
 go vet ./...
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
-go run ./cmd/agentforge -tool csv_analyze -input '{"csv":"name,amount\\nAlpha,10\\nBeta,20\\n"}'
+go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.json
 ```
 
 Expected output:
@@ -56,7 +56,7 @@ Linux/macOS:
 ```bash
 export OPENAI_API_KEY="your-api-key"
 go run ./cmd/agentforge -agent \
-  -model gpt-6-luna \
+  -model your-supported-model-id \
   -prompt "Use the echo tool to repeat hello AgentForge" \
   -allow-permission tool.echo
 ```
@@ -66,14 +66,14 @@ PowerShell:
 ```powershell
 $env:OPENAI_API_KEY = "your-api-key"
 go run ./cmd/agentforge -agent `
-  -model gpt-6-luna `
+  -model your-supported-model-id `
   -prompt "Use the echo tool to repeat hello AgentForge" `
   -allow-permission tool.echo
 ```
 
-The model API account may incur usage charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, and CSV analysis tools.
+Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, and CSV analysis tools.
 
-See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test.
+See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data.
 
 ## How it works
 
@@ -144,6 +144,6 @@ See [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), and [CONTRIBUTING.md
 
 Keep changes small, typed, testable, and explicit about side effects. See [contribution guidelines](CONTRIBUTING.md).
 
-## Documentation review — 2026-11-04
+## Documentation review — 2026-11-05
 
-AgentForge remains an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo, text analysis, and CSV analysis tools are implemented. Tests, vet, and CLI build run in CI without paid API calls. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.
+AgentForge remains an early-stage Go runtime at v0.3.0. The provider interface, OpenAI Responses adapter, bounded model/tool loop, schema validation, default-deny permissions, local echo, text analysis, CSV analysis, and file-based direct input are implemented. The repository includes a synthetic CRM lead-pipeline case study that runs without an API key. Tests, vet, and CLI build run in CI without paid API calls. Live API smoke testing, persistence, human approval, workflow scheduling, and production security review remain future or outstanding work.

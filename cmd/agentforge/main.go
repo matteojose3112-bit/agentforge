@@ -27,9 +27,10 @@ func run(args []string, out *os.File) error {
 	showVersion := flags.Bool("version", false, "print version")
 	agentMode := flags.Bool("agent", false, "run a model-backed agent using OpenAI")
 	toolName := flags.String("tool", "echo", "registered tool to execute in direct mode")
-	input := flags.String("input", "", "direct tool input")
+	input := flags.String("input", "", "direct tool input as a JSON string")
+	inputFile := flags.String("input-file", "", "read direct tool JSON input from a file")
 	prompt := flags.String("prompt", "", "user prompt for agent mode")
-	model := flags.String("model", "gpt-6-luna", "model name for agent mode")
+	model := flags.String("model", "", "model ID supported by your provider account (required in agent mode)")
 	timeout := flags.Duration("timeout", 0, "execution timeout (for example 30s)")
 	permissions := flags.String("allow-permission", "", "comma-separated tool permissions to grant (default: deny all)")
 	if err := flags.Parse(args); err != nil {
@@ -43,6 +44,9 @@ func run(args []string, out *os.File) error {
 	if *agentMode {
 		if strings.TrimSpace(*prompt) == "" {
 			return fmt.Errorf("missing -prompt for agent mode")
+		}
+		if strings.TrimSpace(*model) == "" {
+			return fmt.Errorf("missing -model for agent mode; pass a model ID supported by your API account")
 		}
 		provider, err := openai.New(os.Getenv("OPENAI_API_KEY"))
 		if err != nil {
@@ -71,14 +75,25 @@ func run(args []string, out *os.File) error {
 		_, err = fmt.Fprintln(out, result)
 		return err
 	}
-	if *input == "" {
-		return fmt.Errorf("missing -input; try: agentforge -tool echo -input 'hello'")
+	if *input != "" && *inputFile != "" {
+		return fmt.Errorf("use either -input or -input-file, not both")
+	}
+	toolInput := *input
+	if *inputFile != "" {
+		contents, readErr := os.ReadFile(*inputFile)
+		if readErr != nil {
+			return fmt.Errorf("read input file: %w", readErr)
+		}
+		toolInput = string(contents)
+	}
+	if toolInput == "" {
+		return fmt.Errorf("missing -input or -input-file")
 	}
 	runner, err := agent.NewRunnerWithOptions(agent.Options{Timeout: *timeout}, registeredTools...)
 	if err != nil {
 		return err
 	}
-	result, err := runner.Run(context.Background(), *toolName, *input)
+	result, err := runner.Run(context.Background(), *toolName, toolInput)
 	if err != nil {
 		return err
 	}
