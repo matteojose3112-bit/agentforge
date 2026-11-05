@@ -25,6 +25,7 @@
 - [x] Add bounded CSV analysis for row/column counts, missing values, and numeric summaries, available locally without an API key.
 - [x] Add JSON input-file support and a reproducible synthetic CRM lead-pipeline profiling case study for portfolio review.
 - [x] Add deterministic CRM pipeline metrics with configurable won/lost stages, closed-lead win rate, pipeline values, and stage/source breakdowns.
+- [x] Publish a static GitHub Pages project site from the repository's `/docs` directory.
 - [ ] Run a live API smoke test after a local API key is configured.
 
 ## Release acceptance checklist
@@ -32,6 +33,7 @@
 - [x] Model-backed happy path documented.
 - [x] Default-deny permission behavior documented.
 - [x] CI workflow runs tests, vet, and CLI build.
+- [x] Public GitHub Pages site deployed and verified.
 - [ ] Confirm the live model/tool cycle with a locally configured API key.
 - [ ] Record the live smoke-test result and tag the first release candidate.
 
@@ -56,4 +58,4 @@ Last reviewed: 2026-11-05
 
 ## Current direction — 2026-11-05
 
-**v0.3.0 foundation implemented · Early-stage, not production-ready.** The local runtime now includes deterministic text and CSV analysis capabilities, JSON input-file support, and reproducible CRM lead-pipeline profiling and funnel-analysis cases that can be tested without a model API key. Prioritize portfolio-grade examples, test coverage, and clear limitations before adding more generic tools. Do not tag a release candidate until the model/tool cycle and default-deny boundary have been verified. Keep persistence, human approval, workflow composition, scheduling, and benchmarks evidence-driven; do not add a database, queue, dashboard, or multi-agent layer before the single-agent runtime has demonstrated a need.
+**v0.3.0 foundation implemented · Early-stage, not production-ready.** The local runtime now includes deterministic text and CSV analysis capabilities, JSON input-file support, and reproducible CRM lead-pipeline profiling and funnel-analysis cases that can be tested without a model API key. The public project landing page is live at [matteojose3112-bit.github.io/agentforge](https://matteojose3112-bit.github.io/agentforge/). Prioritize portfolio-grade examples, test coverage, and clear limitations before adding more generic tools. Do not tag a release candidate until the model/tool cycle and default-deny boundary have been verified. Keep persistence, human approval, workflow composition, scheduling, and benchmarks evidence-driven; do not add a database, queue, dashboard, or multi-agent layer before the single-agent runtime has demonstrated a need.
