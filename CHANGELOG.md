@@ -4,6 +4,11 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### CLI and build metadata
+- Expanded `-version` output to include the application version, Git commit, and UTC build timestamp.
+- Added linker-variable defaults so local builds remain usable while release builds can embed build metadata.
+- Documented Linux/macOS and PowerShell release-style build commands in the README.
+
 ### Documentation and project direction — 2026-11-05
 - Reconciled the README with the implemented v0.3.0 repository baseline and explicitly separated automated/local verification from the still-outstanding live provider smoke test.
 - Reworked the roadmap to define v0.4 as a focused, read-only AI Sales Operations Assistant built on the existing CRM pipeline analysis capabilities.
