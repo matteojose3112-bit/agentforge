@@ -17,6 +17,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ## v0.3 — Model and tool integration (implemented; live validation outstanding)
 - [x] Improve CLI help with mode descriptions, flag guidance, safety defaults, and runnable examples.
+- [x] Add a version/build-metadata check to the quick-start commands.
 - [x] Clarify direct-mode input formats: structured tools accept JSON payloads; `echo` accepts plain text.
 - [x] Add a safe `.env.example` template and document how to load credentials without committing the real `.env` file.
 - [x] Validate OpenAI credential configuration before agent startup and report actionable local setup errors.
@@ -98,7 +99,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ---
 
-Last reviewed: 2026-11-05
+Last reviewed: 2026-11-06
 
 ## Current direction
 
@@ -106,6 +107,6 @@ Last reviewed: 2026-11-05
 
 **Outstanding validation:** live provider-backed model/tool smoke test and release-candidate evidence.
 
-**Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, direct/agent-mode examples, and explicit guidance that structured tools expect JSON while `echo` accepts plain text. A placeholder-only `.env.example` documents the OpenAI credential variable; the CLI still reads credentials from the process environment and does not auto-load dotenv files. Agent startup now rejects missing keys, untouched placeholders, `Bearer ` prefixes, and whitespace before attempting a provider request; remote key validity remains an API-side check.
+**Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, direct/agent-mode examples, explicit guidance that structured tools expect JSON while `echo` accepts plain text, and a quick-start `-version` command that displays version/build metadata. A placeholder-only `.env.example` documents the OpenAI credential variable; the CLI still reads credentials from the process environment and does not auto-load dotenv files. Agent startup now rejects missing keys, untouched placeholders, `Bearer ` prefixes, and whitespace before attempting a provider request; remote key validity remains an API-side check.
 
 **Active development target:** v0.4 AI Sales Operations Assistant, starting with workflow definition, synthetic evaluation datasets, and deterministic acceptance criteria. The immediate objective is a demonstrable, read-only business workflow built on the existing code—not premature persistence or infrastructure.
