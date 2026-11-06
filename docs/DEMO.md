@@ -117,7 +117,7 @@ You can verify the default-deny behavior by omitting `-allow-permission tool.ech
 
 ## 5. CLI help and reference
 
-Print the built-in help at any time without running a tool or making an API request:
+Print the built-in help at any time without running a tool or making an API request. Direct-mode input is passed to the selected tool unchanged: structured analysis tools expect JSON, while `echo` accepts plain text:
 
 ```bash
 go run ./cmd/agentforge -h
@@ -130,8 +130,8 @@ For a compiled binary, use `./agentforge -h` (PowerShell: `./agentforge.exe -h`)
 | --- | --- |
 | `-version` | Print the CLI version, Git commit, and build timestamp |
 | `-tool` | Select a registered tool in direct mode (default: `echo`) |
-| `-input` | JSON input for direct tool mode; mutually exclusive with `-input-file` |
-| `-input-file` | Read direct tool JSON input from a file; mutually exclusive with `-input` |
+| `-input` | Tool input payload (JSON for structured tools; plain text for `echo`); mutually exclusive with `-input-file` |
+| `-input-file` | Read the selected tool input payload from a file; mutually exclusive with `-input` |
 | `-agent` | Enable model-backed agent mode |
 | `-prompt` | User prompt for agent mode |
 | `-model` | API model ID |
