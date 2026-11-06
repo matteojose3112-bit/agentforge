@@ -5,6 +5,8 @@ All notable changes to AgentForge are documented here.
 ## [Unreleased]
 
 ### Configuration and credential safety
+- Added preflight validation for missing OpenAI credentials, untouched template placeholders, accidental `Bearer ` prefixes, and whitespace; errors explain how to correct the local configuration without exposing the secret.
+- Added provider-constructor and CLI tests for credential validation cases. This validation does not claim to verify remote key validity or permissions.
 - Added a placeholder-only `.env.example` for `OPENAI_API_KEY`; the real `.env` remains ignored by Git.
 - Documented shell-specific ways to load the environment variable and clarified that AgentForge does not automatically parse dotenv files.
 
