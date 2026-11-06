@@ -79,7 +79,7 @@ go build -o agentforge.exe ./cmd/agentforge
 
 ## 3. Run the model-backed agent (API usage may be billed)
 
-Start with the tracked [`.env.example`](../.env.example): copy it to `.env` and replace the placeholder with your key. The real `.env` file is ignored by Git. AgentForge reads the key from the process environment and does not automatically load dotenv files.
+Start with the tracked [`.env.example`](../.env.example): copy it to `.env` and replace the placeholder with your key. The real `.env` file is ignored by Git. AgentForge reads the key from the process environment and does not automatically load dotenv files. Before making a model request, startup validation checks for a missing key, the untouched template placeholder, a `Bearer ` prefix, and whitespace in the value. This catches common setup errors locally; it cannot verify whether a key is active or authorized without contacting the API.
 
 Load it into your current shell. Do not paste it into source code, command history, screenshots, or GitHub.
 
