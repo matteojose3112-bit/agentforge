@@ -168,6 +168,8 @@ func TestRunPrintsHelpAndReturnsSuccess(t *testing.T) {
 		"Agent mode",
 		"-allow-permission",
 		"Examples:",
+		"Structured tools expect JSON",
+		"plain text for echo",
 		"OPENAI_API_KEY",
 	} {
 		if !strings.Contains(string(result), expected) {
