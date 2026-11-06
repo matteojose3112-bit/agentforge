@@ -49,3 +49,36 @@ func TestProviderRejectsMissingAPIKey(t *testing.T) {
 	provider := &Provider{}
 	if _, err := provider.Generate(context.Background(), agent.ModelRequest{}); err == nil { t.Fatal("expected missing key error") }
 }
+
+
+func TestNewRejectsInvalidAPIKeyConfiguration(t *testing.T) {
+	tests := []struct {
+		name string
+		key  string
+		want string
+	}{
+		{name: "missing", key: "", want: "OPENAI_API_KEY is not set"},
+		{name: "template placeholder", key: "replace-with-your-openai-api-key", want: "template placeholder"},
+		{name: "bearer prefix", key: "Bearer sk-example", want: "without the 'Bearer ' prefix"},
+		{name: "surrounding whitespace", key: " sk-example ", want: "contains whitespace"},
+		{name: "embedded whitespace", key: "sk-example key", want: "contains whitespace"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := New(test.key)
+			if err == nil || !strings.Contains(err.Error(), test.want) {
+				t.Fatalf("New() error = %v, want it to contain %q", err, test.want)
+			}
+		})
+	}
+}
+
+func TestNewAcceptsNonPlaceholderAPIKey(t *testing.T) {
+	provider, err := New("sk-test-example")
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+	if provider.APIKey != "sk-test-example" {
+		t.Fatal("provider did not retain the configured key")
+	}
+}
