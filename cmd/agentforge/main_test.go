@@ -175,3 +175,32 @@ func TestRunPrintsHelpAndReturnsSuccess(t *testing.T) {
 		}
 	}
 }
+
+
+func TestRunAgentModeReportsMissingAPIKeyBeforeStarting(t *testing.T) {
+	t.Setenv("OPENAI_API_KEY", "")
+	output, err := os.CreateTemp(t.TempDir(), "output")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer output.Close()
+
+	err = run([]string{"-agent", "-prompt", "analyze this", "-model", "test-model"}, output)
+	if err == nil || !strings.Contains(err.Error(), "OPENAI_API_KEY is not set") {
+		t.Fatalf("run() error = %v, want actionable missing-key error", err)
+	}
+}
+
+func TestRunAgentModeRejectsTemplateAPIKey(t *testing.T) {
+	t.Setenv("OPENAI_API_KEY", "replace-with-your-openai-api-key")
+	output, err := os.CreateTemp(t.TempDir(), "output")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer output.Close()
+
+	err = run([]string{"-agent", "-prompt", "analyze this", "-model", "test-model"}, output)
+	if err == nil || !strings.Contains(err.Error(), "template placeholder") {
+		t.Fatalf("run() error = %v, want template-placeholder error", err)
+	}
+}
