@@ -12,6 +12,7 @@ All notable changes to AgentForge are documented here.
 - Documented shell-specific ways to load the environment variable and clarified that AgentForge does not automatically parse dotenv files.
 
 ### CLI usability
+- Added `go run ./cmd/agentforge -version` to the quick-start sequence and explained the version/build metadata shown by local versus release-style builds.
 - Clarified that direct-mode input is passed to the selected tool unchanged: structured tools expect JSON, while `echo` accepts plain text.
 - Replaced the minimal flag listing with structured CLI help covering direct and agent modes, usage examples, required environment configuration, mutually exclusive input options, and default-deny permissions.
 - Improved individual flag descriptions and made `-h`/`-help` return successfully after printing help.
