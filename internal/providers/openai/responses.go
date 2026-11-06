@@ -27,12 +27,12 @@ func New(apiKey string) (*Provider, error) {
 	if strings.TrimSpace(apiKey) == "" {
 		return nil, errors.New("OPENAI_API_KEY is not set; configure it in your environment before using -agent")
 	}
-	if strings.TrimSpace(apiKey) != apiKey || strings.ContainsAny(apiKey, " \t\r\n") {
-		return nil, errors.New("OPENAI_API_KEY contains whitespace; provide the API key value only, without surrounding spaces or line breaks")
-	}
 	lowerKey := strings.ToLower(apiKey)
 	if strings.HasPrefix(lowerKey, "bearer ") {
 		return nil, errors.New("OPENAI_API_KEY must contain the key only, without the 'Bearer ' prefix")
+	}
+	if strings.TrimSpace(apiKey) != apiKey || strings.ContainsAny(apiKey, " \t\r\n") {
+		return nil, errors.New("OPENAI_API_KEY contains whitespace; provide the API key value only, without surrounding spaces or line breaks")
 	}
 	if strings.Contains(lowerKey, "replace-with-your") || strings.Contains(lowerKey, "your-api-key") || lowerKey == "changeme" || lowerKey == "your_openai_api_key" {
 		return nil, errors.New("OPENAI_API_KEY still contains a template placeholder; replace it with your actual API key")
