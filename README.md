@@ -66,7 +66,7 @@ hello AgentForge
 
 ## Run a model-backed agent
 
-The first provider uses the OpenAI Responses API. You can start from the tracked [`.env.example`](.env.example) template. Copy it to `.env`, replace the placeholder, and load the variable into your shell. The `.env` file is ignored by Git. AgentForge reads `OPENAI_API_KEY` from the process environment; it does **not** automatically load dotenv files.
+The first provider uses the OpenAI Responses API. You can start from the tracked [`.env.example`](.env.example) template. Copy it to `.env`, replace the placeholder, and load the variable into your shell. The `.env` file is ignored by Git. AgentForge reads `OPENAI_API_KEY` from the process environment; it does **not** automatically load dotenv files. Before starting agent mode, it checks that the variable is present and rejects obvious configuration mistakes such as the untouched template value, a `Bearer ` prefix, or whitespace. This is a local sanity check—not a remote API-key validity check; revoked or unauthorized keys are reported by the API.
 
 Linux/macOS (after copying `.env.example` to `.env` and editing it):
 
