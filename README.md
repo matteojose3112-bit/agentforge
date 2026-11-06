@@ -50,11 +50,14 @@ cd agentforge
 go test ./...
 go vet ./...
 go run ./cmd/agentforge -h
+go run ./cmd/agentforge -version
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.json
 go run ./cmd/agentforge -tool lead_pipeline_analyze -input-file examples/lead_pipeline_analysis.json
 go run ./cmd/agentforge -tool sales_ops_report -input-file examples/sales_ops_snapshot.json
 ```
+
+The `-version` command prints the application version, Git commit, and build timestamp. A local `go run` uses the default version and reports `unknown` for commit/build metadata unless those values are embedded in a release build.
 
 Use `go run ./cmd/agentforge -h` to view the CLI modes, all flags, safety defaults, and copyable examples. The compiled binary supports the same help output with `./agentforge -h` (PowerShell: `./agentforge.exe -h`).
 
@@ -74,9 +77,9 @@ Linux/macOS (after copying `.env.example` to `.env` and editing it):
 set -a
 source ./.env
 set +a
-go run ./cmd/agentforge -agent \
-  -model your-supported-model-id \
-  -prompt "Use the echo tool to repeat hello AgentForge" \
+go run ./cmd/agentforge -agent \\
+  -model your-supported-model-id \\
+  -prompt "Use the echo tool to repeat hello AgentForge" \\
   -allow-permission tool.echo
 ```
 
@@ -188,7 +191,7 @@ $version = "0.3.0"
 $commit = git rev-parse --short HEAD
 $buildDate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 go build -ldflags "-X main.version=$version -X main.commit=$commit -X main.buildDate=$buildDate" -o agentforge.exe ./cmd/agentforge
-.\agentforge.exe -version
+.\\agentforge.exe -version
 ```
 
 See [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
