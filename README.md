@@ -151,7 +151,7 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 
 ## CLI help
 
-The CLI provides contextual help for direct tool execution and model-backed agent mode:
+The CLI provides contextual help for direct tool execution and model-backed agent mode. Direct-mode `-input` and `-input-file` pass the selected tool its input payload: structured analysis tools expect JSON, while the `echo` tool accepts plain text.
 
 ```bash
 go run ./cmd/agentforge -h
