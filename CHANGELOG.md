@@ -4,12 +4,19 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Live workspace integration verification — 2026-11-08
+- Confirmed the deployed GitHub Pages workspace connects to the Render-hosted Go API using the configured bearer token.
+- Successfully ran the sample CRM CSV through the authenticated `/api/inspect` endpoint from the browser workspace; the Go runtime returned the inspection results and the workflow paused at the operator mapping-confirmation checkpoint.
+- Updated the Render service source branch from the former feature branch to `main` and deployed the CORS preflight fix from PR #8 (commit `d6da8e2`).
+- Authenticated `/api/report` generation remains to be exercised through the workspace; no live model/provider cycle has been claimed.
+
+
 ### Deployment and live API verification — 2026-11-08
-- Deployed the Go HTTP API to Render Free in Virginia at https://agentforge-api-s4zx.onrender.com, linked to the feature branch with automatic deploys after CI checks pass.
-- Configured the generated `AGENTFORGE_API_TOKEN` secret and restricted browser CORS to the GitHub Pages origin; no secret is stored in the repository or public frontend.
+- Deployed the Go HTTP API to Render Free in Virginia at https://agentforge-api-s4zx.onrender.com, tracking `main` with automatic deploys after CI checks pass.
+- Configured the generated `AGENTFORGE_API_TOKEN` secret and restricted browser CORS to the GitHub Pages origin; no secret is stored in the repository or public frontend. Updated the Render service to track `main` and deployed the PR #8 CORS authorization-preflight fix.
 - Verified the deployed `/healthz` endpoint returns HTTP 200 with the expected AgentForge health payload.
 - Verified unauthenticated requests to `/api/inspect` and `/api/report` are rejected with HTTP 401.
-- Authenticated POST requests with representative CSV data have not yet been tested against the live deployment; the API's data-processing behavior remains covered by repository tests pending that final live check.
+- Authenticated sample CSV inspection has since been successfully tested from the deployed browser workspace. Authenticated report generation remains unverified against the live deployment; the API's report behavior remains covered by repository tests pending that final live check.
 
 ### Configuration and credential safety
 - Added preflight validation for missing OpenAI credentials, untouched template placeholders, accidental `Bearer ` prefixes, and whitespace; errors explain how to correct the local configuration without exposing the secret.
