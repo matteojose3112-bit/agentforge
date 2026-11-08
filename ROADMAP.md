@@ -62,7 +62,9 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Keep recommendations rule-based and tied to observed counts/fields; avoid unsupported causes or forecasts.
 - [x] Keep the report read-only; no CRM writes, emails, or external side effects.
 - [x] Register the capability behind its own default-deny permission (`tool.sales_ops.report`) and retain bounded agent execution.
-- [ ] Add a guided prompt/workflow that helps an operator map their CRM columns and interpret the report.
+- [x] Add bounded CSV inspection that returns headers, missing/non-empty counts, and up to five distinct sample values per column.
+- [x] Document the operator-confirmed mapping sequence and separate inspection/report permissions.
+- [ ] Add a guided conversational mapping flow that asks the operator to confirm ambiguous columns and won/lost labels before report generation.
 
 ### Phase 3 — Evaluate and demonstrate
 - [x] Add synthetic baseline fixtures for healthy, weak, incomplete, and zero-record pipelines, with expected metric summaries documented in `docs/SALES_OPS_EVALUATION.md`.
