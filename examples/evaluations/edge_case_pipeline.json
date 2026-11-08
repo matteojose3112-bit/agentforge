@@ -1,0 +1,8 @@
+{
+  "csv": "lead_id,channel,outcome,amount\n",
+  "status_column": "outcome",
+  "value_column": "amount",
+  "source_column": "channel",
+  "won_statuses": ["Closed - Success"],
+  "lost_statuses": ["Closed - No Sale"]
+}
