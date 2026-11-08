@@ -23,6 +23,10 @@ jobs:
           cache: true
       - name: Run tests
         run: go test ./...
+      - name: Validate workspace JavaScript
+        run: |
+          python3 -c 'import re; s=open("docs/workspace.html", encoding="utf-8").read(); m=re.search(r"<script>(.*?)</script>", s, re.S); assert m, "workspace script not found"; open("/tmp/agentforge-workspace.js", "w", encoding="utf-8").write(m.group(1))'
+          node --check /tmp/agentforge-workspace.js
       - name: Run vet
         run: go vet ./...
       - name: Build CLI
