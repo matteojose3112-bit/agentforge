@@ -35,6 +35,7 @@ The v0.3.0 runtime and local business-analysis examples are implemented. The fir
 - Local echo tool for a complete first tool-call cycle.
 - Read-only text analysis tool for word, Unicode character, line, and estimated reading-time metrics.
 - Bounded CSV analysis for row/column counts, missing cells, and numeric-column summaries.
+- Read-only CRM CSV inspection with sample values and an enforced new-user-turn checkpoint before sales report generation.
 - CRM lead-pipeline analysis for won/lost/open counts, closed-lead win rate, pipeline value, missing fields, and stage/source breakdowns.
 - Read-only sales operations report combining deterministic pipeline metrics with rule-based observations and follow-up recommendations.
 - Unit tests, Go vet, and GitHub Actions CI.
@@ -93,7 +94,7 @@ go run ./cmd/agentforge -agent `
   -allow-permission tool.echo
 ```
 
-Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling, CRM lead-pipeline analysis, and the sales operations report tools.
+Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling and inspection, CRM lead-pipeline analysis, and the sales operations report tools. CSV inspection and report generation require separate permissions; after inspection, the runtime blocks report generation until a new user turn.
 
 See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md and [the guided CSV inspection workflow](docs/CSV_INSPECTION.md)) documents four additional synthetic scenarios and deterministic acceptance criteria.
 
