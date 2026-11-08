@@ -27,3 +27,5 @@ jobs:
         run: go vet ./...
       - name: Build CLI
         run: go build ./cmd/agentforge
+      - name: Build workspace API
+        run: go build ./cmd/agentforge-server
