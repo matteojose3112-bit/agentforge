@@ -20,7 +20,7 @@ func main() {
 		address = ":" + envOr("PORT", "8080")
 	}
 	origins := strings.Split(os.Getenv("AGENTFORGE_ALLOWED_ORIGINS"), ",")
-	api := httpapi.New(origins)
+	api := httpapi.NewWithToken(origins, os.Getenv("AGENTFORGE_API_TOKEN"))
 	server := httpapi.NewHTTPServer(address, api)
 
 	stopped := make(chan os.Signal, 1)
