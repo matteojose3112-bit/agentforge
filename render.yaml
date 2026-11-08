@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: agentforge-api
+    runtime: go
+    region: virginia
+    plan: free
+    buildCommand: go build -o agentforge-api ./cmd/agentforge-server
+    startCommand: ./agentforge-api
+    healthCheckPath: /healthz
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: AGENTFORGE_ALLOWED_ORIGINS
+        value: https://matteojose3112-bit.github.io
+      - key: AGENTFORGE_API_TOKEN
+        generateValue: true
