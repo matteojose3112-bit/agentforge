@@ -68,6 +68,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Add synthetic baseline fixtures for healthy, weak, incomplete, and zero-record pipelines, with expected metric summaries documented in `docs/SALES_OPS_EVALUATION.md`.
 - [ ] Add repeatable evaluation fixtures for multiple pipeline shapes, expected metrics, grounded recommendations, malformed input, and permission denial.
 - [x] Add deterministic unit tests for report metrics, recommendation triggers, unavailable win-rate context, schema validity, and invalid input.
+- [x] Add fixture-backed regression tests that execute all four synthetic scenarios and assert pipeline/report metrics plus selected recommendation triggers.
 - [ ] Add tests for the full model-backed workflow using a fake/local provider so CI remains API-cost-free.
 - [ ] Publish a reproducible demo with sample input, command, output, and operator interpretation.
 - [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
