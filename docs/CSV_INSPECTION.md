@@ -24,10 +24,10 @@ The tool accepts a JSON payload with a `csv` string. For a small export, create 
 Then run:
 
 ```bash
-go run ./cmd/agentforge -tool csv_inspect -input-file examples/crm_inspection_input.json
+go run ./cmd/agentforge -tool csv_inspect -input-file examples/evaluations/inspection_input.json
 ```
 
-For a real export, place the CSV contents in the `csv` field of the JSON payload. Keep customer-sensitive exports local and do not commit them to the repository.
+For a real export, place the CSV contents in the `csv` field of a local JSON payload. Keep customer-sensitive exports local and do not commit them to the repository.
 
 ## Operator-guided mapping sequence
 
