@@ -3,6 +3,7 @@ package tools
 import (
 	"context"
 	"encoding/json"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -66,7 +67,7 @@ func TestSalesOpsEvaluationFixtures(t *testing.T) {
 			}
 
 			if got.TotalLeads != tc.total || got.ClosedLeads != tc.closed || got.OpenLeads != tc.open ||
-				got.WinRatePercent != tc.winRate || got.OpenPipelineValue != tc.openValue ||
+				math.Abs(got.WinRatePercent-tc.winRate) > 1e-9 || got.OpenPipelineValue != tc.openValue ||
 				got.MissingStatuses != tc.missingStatuses || got.MissingValues != tc.missingValues ||
 				got.MissingSources != tc.missingSources {
 				t.Fatalf("unexpected report metrics: %+v", got)
