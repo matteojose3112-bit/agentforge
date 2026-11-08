@@ -72,6 +72,24 @@ func TestRejectsUnknownFieldsAndUnapprovedOrigins(t *testing.T) {
 	}
 }
 
+func TestCORSPreflightAllowsBearerAuthorization(t *testing.T) {
+	server := NewWithToken([]string{"https://matteojose3112-bit.github.io"}, "demo-secret")
+	request := httptest.NewRequest(http.MethodOptions, "/api/inspect", nil)
+	request.Header.Set("Origin", "https://matteojose3112-bit.github.io")
+	request.Header.Set("Access-Control-Request-Method", "POST")
+	request.Header.Set("Access-Control-Request-Headers", "authorization,content-type")
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+
+	if response.Code != http.StatusNoContent {
+		t.Fatalf("expected preflight success, got %d: %s", response.Code, response.Body.String())
+	}
+	allowed := strings.ToLower(response.Header().Get("Access-Control-Allow-Headers"))
+	if !strings.Contains(allowed, "authorization") || !strings.Contains(allowed, "content-type") {
+		t.Fatalf("preflight did not allow required headers: %q", allowed)
+	}
+}
+
 func TestAPIRequiresConfiguredBearerToken(t *testing.T) {
 	server := NewWithToken(nil, "demo-secret")
 	body := `{"csv":"A\\nx"}`
