@@ -238,7 +238,7 @@ func TestAgentDeniesLeadPipelineAnalysisWithoutPermission(t *testing.T) {
 }
 
 func TestAgentRequiresNewUserTurnBetweenCSVInspectionAndSalesReport(t *testing.T) {
-	csv := "stage,value,source\\nQualified,1200,Referral\\nWon,2500,Google Ads\\n"
+	csv := "stage,value,source\nQualified,1200,Referral\nWon,2500,Google Ads\n"
 	inspectArgs, err := json.Marshal(map[string]string{"csv": csv})
 	if err != nil { t.Fatal(err) }
 	reportArgs, err := json.Marshal(map[string]any{
