@@ -4,17 +4,17 @@
 
 > **Live project site:** [AgentForge on GitHub Pages](https://matteojose3112-bit.github.io/agentforge/) · **Repository:** [GitHub](https://github.com/matteojose3112-bit/agentforge)
 
-> **Release status:** v0.3.0 foundation implemented. Early-stage developer project; not production-ready. The live model/tool workflow has not yet been verified with a real API key.
+> **Project status:** v0.4 read-only Sales Operations workflow implemented and API deployed on Render Free. Early-stage developer project; not production-ready. The live model/tool workflow and authenticated API data-processing requests still require end-to-end validation.
 
 AgentForge keeps orchestration in Go and puts model providers behind a small interface. Models can request capabilities, but only tools explicitly registered by the application can execute, and permissions are denied unless explicitly granted.
 
 ## Current project status
 
-The v0.3.0 runtime and local business-analysis examples are implemented. The first v0.4 slice now adds a read-only sales operations report that combines existing CRM pipeline metrics with observations and rule-based review actions. Next priorities are broader evaluation datasets, a guided operator workflow, and full model-loop tests before treating this as a complete assistant.
+The v0.3.0 runtime and v0.4 read-only Sales Operations workflow are implemented. The guided workspace is connected to a deployed Go HTTP API on Render Free. The API health endpoint is live, and both data-processing routes have been confirmed to reject unauthenticated requests. Authenticated CSV inspection/report requests and a live model/tool cycle remain validation items.
 
-**What is verified in the repository:** local tool execution paths, deterministic analysis tools, automated tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls.
+**What is verified:** local tool execution paths, deterministic analysis tools, automated tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls. The Render deployment is live; `/healthz` returns HTTP 200, while unauthenticated requests to `/api/inspect` and `/api/report` return HTTP 401.
 
-**What is not yet verified or implemented:** a successful live model/tool cycle against an actual provider account; persisted conversations or task history; approval checkpoints; scheduled/background workflows; and production deployment or security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
+**Not yet verified or implemented:** successful authenticated requests to the two deployed data-processing endpoints; a live model/tool cycle against an actual provider account; persisted conversations or task history; durable approval workflows; scheduled/background workflows; and production security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
 
 ## Why AgentForge
 
@@ -39,7 +39,7 @@ The v0.3.0 runtime and local business-analysis examples are implemented. The fir
 - CRM lead-pipeline analysis for won/lost/open counts, closed-lead win rate, pipeline value, missing fields, and stage/source breakdowns.
 - Read-only sales operations report combining deterministic pipeline metrics with rule-based observations and follow-up recommendations.
 - Unit tests, Go vet, and GitHub Actions CI.
-- Read-only HTTP API exposing the existing CSV inspection and sales operations report tools to the guided workspace.
+- Read-only HTTP API exposing the existing CSV inspection and sales operations report tools to the guided workspace; deployed on Render Free with a generated bearer-token secret and GitHub Pages CORS allow-list.
 
 ## Quick start
 
@@ -98,7 +98,7 @@ go run ./cmd/agentforge -agent `
 
 Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling and inspection, CRM lead-pipeline analysis, and the sales operations report tools. CSV inspection and report generation require separate permissions; after inspection, the runtime blocks report generation until a new user turn.
 
-See the [workspace API guide](docs/API.md) for HTTP endpoints, local startup, CORS configuration, and deployment boundaries. The [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md and [the guided CSV inspection workflow](docs/CSV_INSPECTION.md)) documents four additional synthetic scenarios and deterministic acceptance criteria.
+Live API: [AgentForge API on Render](https://agentforge-api-s4zx.onrender.com) · Health check: [ `/healthz` ](https://agentforge-api-s4zx.onrender.com/healthz). The health route is public; `/api/inspect` and `/api/report` require the configured bearer token. See the [workspace API guide](docs/API.md) for endpoints, local startup, CORS configuration, and deployment boundaries. The [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md and [the guided CSV inspection workflow](docs/CSV_INSPECTION.md)) documents four additional synthetic scenarios and deterministic acceptance criteria.
 
 ## How it works
 
@@ -203,8 +203,8 @@ See [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), and [CONTRIBUTING.md
 
 Keep changes small, typed, testable, and explicit about side effects. See [contribution guidelines](CONTRIBUTING.md).
 
-## Documentation review — 2026-11-05
+## Documentation review — 2026-11-08
 
-The repository is at the v0.3.0 implementation baseline. The local CLI, provider abstraction, OpenAI adapter, bounded model/tool loop, schema validation, default-deny permissions, text and CSV analysis, CRM lead-pipeline metrics, synthetic examples, and GitHub Pages project site are present. Automated tests and CI cover local behavior without paid model calls. A real provider-backed tool cycle has not yet been confirmed, so the project is not presented as a verified live AI assistant or production system.
+The v0.3 runtime foundation and v0.4 read-only Sales Operations workflow are implemented. The project includes deterministic CRM analysis, synthetic evaluation fixtures, a guided CSV workspace, a Go HTTP API, unit tests, and CI. The API is deployed at https://agentforge-api-s4zx.onrender.com on Render Free. Live verification confirms `/healthz` returns HTTP 200 and both protected data-processing routes reject unauthenticated requests with HTTP 401. Authenticated `/api/inspect` and `/api/report` payloads have not yet been exercised against the deployed service, and a real provider-backed model/tool cycle remains outstanding.
 
-The active v0.4 work is a focused AI Sales Operations Assistant built on the existing CRM lead-pipeline analysis capabilities. A small read-only HTTP API now exposes CSV inspection and sales reporting for the workspace; the static browser UI still needs its API URL configured before it can call a deployed service. Its first read-only report slice is implemented; next priorities are broader synthetic evaluation cases, a guided workflow, and full agent-loop testing before considering persistence, scheduling, dashboards, or more infrastructure.
+The workspace is designed as an operator-guided AI workspace, not another dashboard. It can use the deployed API after the operator supplies the bearer token in the connection panel. The API remains read-only: it inspects CSVs and generates deterministic reports without CRM writes, outbound messages, or other external side effects. Persistence, scheduling, background workers, and broader production security work remain out of scope until justified by usage.
