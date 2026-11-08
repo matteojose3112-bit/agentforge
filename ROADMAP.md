@@ -64,7 +64,9 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Register the capability behind its own default-deny permission (`tool.sales_ops.report`) and retain bounded agent execution.
 - [x] Add bounded CSV inspection that returns headers, missing/non-empty counts, and up to five distinct sample values per column.
 - [x] Document the operator-confirmed mapping sequence and separate inspection/report permissions.
-- [ ] Add a guided conversational mapping flow that asks the operator to confirm ambiguous columns and won/lost labels before report generation.
+- [x] Enforce a new user-turn checkpoint between CSV inspection and sales report generation, with tests for same-response blocking.
+- [x] Document that the operator must confirm mappings and re-supply the CSV in the next CLI run.
+- [ ] Improve mapping suggestions with deterministic header/value heuristics and explicit confidence levels.
 
 ### Phase 3 — Evaluate and demonstrate
 - [x] Add synthetic baseline fixtures for healthy, weak, incomplete, and zero-record pipelines, with expected metric summaries documented in `docs/SALES_OPS_EVALUATION.md`.
