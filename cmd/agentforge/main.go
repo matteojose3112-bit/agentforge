@@ -40,7 +40,7 @@ func run(args []string, out *os.File) error {
 		flags.PrintDefaults()
 		fmt.Fprintln(out, "\nExamples:")
 		fmt.Fprintln(out, "  agentforge -tool echo -input \"hello AgentForge\"")
-		fmt.Fprintln(out, "  agentforge -tool csv_inspect -input-file exports/crm.csv")
+		fmt.Fprintln(out, "  agentforge -tool csv_inspect -input-file examples/evaluations/inspection_input.json")
 		fmt.Fprintln(out, "  agentforge -tool sales_ops_report -input-file examples/sales_ops_snapshot.json")
 		fmt.Fprintln(out, "  agentforge -agent -model YOUR_MODEL -prompt \"Analyze this pipeline\" -allow-permission tool.sales_ops.report")
 		fmt.Fprintln(out, "  agentforge -version")
