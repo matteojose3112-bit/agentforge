@@ -40,6 +40,7 @@ func run(args []string, out *os.File) error {
 		flags.PrintDefaults()
 		fmt.Fprintln(out, "\nExamples:")
 		fmt.Fprintln(out, "  agentforge -tool echo -input \"hello AgentForge\"")
+		fmt.Fprintln(out, "  agentforge -tool csv_inspect -input-file exports/crm.csv")
 		fmt.Fprintln(out, "  agentforge -tool sales_ops_report -input-file examples/sales_ops_snapshot.json")
 		fmt.Fprintln(out, "  agentforge -agent -model YOUR_MODEL -prompt \"Analyze this pipeline\" -allow-permission tool.sales_ops.report")
 		fmt.Fprintln(out, "  agentforge -version")
@@ -68,7 +69,7 @@ func run(args []string, out *os.File) error {
 		_, err := fmt.Fprintf(out, "AgentForge %s\nCommit: %s\nBuilt: %s\n", version, commit, buildDate)
 		return err
 	}
-	registeredTools := []agent.Tool{tools.Echo{}, tools.TextAnalyze{}, tools.CSVAnalyze{}, tools.LeadPipelineAnalyze{}, tools.SalesOpsReport{}}
+	registeredTools := []agent.Tool{tools.Echo{}, tools.TextAnalyze{}, tools.CSVAnalyze{}, tools.CSVInspect{}, tools.LeadPipelineAnalyze{}, tools.SalesOpsReport{}}
 	if *agentMode {
 		if strings.TrimSpace(*prompt) == "" {
 			return fmt.Errorf("missing -prompt for agent mode")
