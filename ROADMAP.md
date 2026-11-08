@@ -75,8 +75,9 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Add fixture-backed regression tests that execute all four synthetic scenarios and assert pipeline/report metrics plus selected recommendation triggers.
 - [ ] Add tests for the full model-backed workflow using a fake/local provider so CI remains API-cost-free.
 - [ ] Publish a reproducible CLI demo with sample input, command, output, and operator interpretation.\n- [x] Add a browser-based guided workspace prototype with local CSV inspection, an explicit mapping approval checkpoint, and a deterministic read-only report using synthetic data; clearly label it as a front-end demo, not a live Go runtime integration.
-- [x] Expose the existing Go CSV inspection and sales report tools through bounded, read-only HTTP endpoints with strict JSON decoding and configurable CORS origins.
-- [ ] Connect the browser workspace to a deployed API endpoint and verify the end-to-end operator-confirmed flow.
+- [x] Expose the existing Go CSV inspection and sales report tools through bounded, read-only HTTP endpoints with strict JSON decoding, configurable CORS origins, and optional bearer-token protection.
+- [x] Connect the browser workspace to configurable Go API endpoints while retaining an explicit local-only demo mode.
+- [ ] Deploy the API with a protected secret and verify the end-to-end operator-confirmed flow.
 - [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
 - [ ] Run the live provider smoke test when an API key and a suitable low-cost model are available.
 
