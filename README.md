@@ -39,6 +39,7 @@ The v0.3.0 runtime and local business-analysis examples are implemented. The fir
 - CRM lead-pipeline analysis for won/lost/open counts, closed-lead win rate, pipeline value, missing fields, and stage/source breakdowns.
 - Read-only sales operations report combining deterministic pipeline metrics with rule-based observations and follow-up recommendations.
 - Unit tests, Go vet, and GitHub Actions CI.
+- Read-only HTTP API exposing the existing CSV inspection and sales operations report tools to the guided workspace.
 
 ## Quick start
 
@@ -52,6 +53,7 @@ go test ./...
 go vet ./...
 go run ./cmd/agentforge -h
 go run ./cmd/agentforge -version
+AGENTFORGE_ALLOWED_ORIGINS=http://localhost:5500 go run ./cmd/agentforge-server
 go run ./cmd/agentforge -tool echo -input "hello AgentForge"
 go run ./cmd/agentforge -tool csv_analyze -input-file examples/lead_pipeline.json
 go run ./cmd/agentforge -tool lead_pipeline_analyze -input-file examples/lead_pipeline_analysis.json
@@ -96,7 +98,7 @@ go run ./cmd/agentforge -agent `
 
 Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling and inspection, CRM lead-pipeline analysis, and the sales operations report tools. CSV inspection and report generation require separate permissions; after inspection, the runtime blocks report generation until a new user turn.
 
-See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md and [the guided CSV inspection workflow](docs/CSV_INSPECTION.md)) documents four additional synthetic scenarios and deterministic acceptance criteria.
+See the [workspace API guide](docs/API.md) for HTTP endpoints, local startup, CORS configuration, and deployment boundaries. The [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md and [the guided CSV inspection workflow](docs/CSV_INSPECTION.md)) documents four additional synthetic scenarios and deterministic acceptance criteria.
 
 ## How it works
 
@@ -205,4 +207,4 @@ Keep changes small, typed, testable, and explicit about side effects. See [contr
 
 The repository is at the v0.3.0 implementation baseline. The local CLI, provider abstraction, OpenAI adapter, bounded model/tool loop, schema validation, default-deny permissions, text and CSV analysis, CRM lead-pipeline metrics, synthetic examples, and GitHub Pages project site are present. Automated tests and CI cover local behavior without paid model calls. A real provider-backed tool cycle has not yet been confirmed, so the project is not presented as a verified live AI assistant or production system.
 
-The active v0.4 work is a focused AI Sales Operations Assistant built on the existing CRM lead-pipeline analysis capabilities. Its first read-only report slice is implemented; next priorities are broader synthetic evaluation cases, a guided workflow, and full agent-loop testing before considering persistence, scheduling, dashboards, or more infrastructure.
+The active v0.4 work is a focused AI Sales Operations Assistant built on the existing CRM lead-pipeline analysis capabilities. A small read-only HTTP API now exposes CSV inspection and sales reporting for the workspace; the static browser UI still needs its API URL configured before it can call a deployed service. Its first read-only report slice is implemented; next priorities are broader synthetic evaluation cases, a guided workflow, and full agent-loop testing before considering persistence, scheduling, dashboards, or more infrastructure.
