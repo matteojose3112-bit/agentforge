@@ -21,7 +21,7 @@ No model API key or external service is required for these deterministic report 
 |---|---|---|
 | `healthy_pipeline.json` | Balanced, complete pipeline with both closed outcomes and active opportunities | 6 leads; 2 won; 1 lost; 3 open; 3 closed; 66.7% win rate; 40,000 open pipeline value; no missing configured fields |
 | `weak_pipeline.json` | Low observed win rate with a larger open pipeline | 8 leads; 1 won; 3 lost; 4 open; 4 closed; 25.0% win rate; 47,000 open pipeline value; no missing configured fields |
-| `incomplete_pipeline.json` | Missing stage, estimated-value, and source fields | 7 leads; 1 won; 1 lost; 4 open; 2 closed; 50.0% win rate; 26,000 open pipeline value; 1 missing status; 2 missing values; 2 missing sources |
+| `incomplete_pipeline.json` | Missing stage, estimated-value, and source fields | 7 leads; 1 won; 1 lost; 4 open; 2 closed; 50.0% win rate; 17,000 open pipeline value; 1 missing status; 2 missing values; 2 missing sources |
 | `edge_case_pipeline.json` | Header-only CSV, custom outcome labels, and zero records | 0 leads; 0 closed; 0 open; 0% numeric win-rate field with explanatory unavailable-context observation; zero missing fields |
 
 ## Deterministic acceptance criteria
