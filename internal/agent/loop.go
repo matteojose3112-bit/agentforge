@@ -78,6 +78,7 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 		definitions = append(definitions, spec)
 	}
 	sort.Slice(definitions, func(i, j int) bool { return definitions[i].Name < definitions[j].Name })
+	executedTools := make(map[string]bool)
 	for turn := 0; turn < a.maxTurns; turn++ {
 		if err := ctx.Err(); err != nil {
 			return "", err
@@ -91,6 +92,19 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 		}
 		if turn == a.maxTurns-1 {
 			return "", fmt.Errorf("model exceeded maximum of %d tool turns", a.maxTurns)
+		}
+		// Preflight the complete batch so a dependent tool cannot run alongside
+		// its prerequisite in the same model response.
+		requestedInBatch := make(map[string]bool, len(response.ToolCalls))
+		for _, call := range response.ToolCalls { requestedInBatch[call.Name] = true }
+		for _, call := range response.ToolCalls {
+			spec, exists := a.specs[call.Name]
+			if !exists { return "", fmt.Errorf("model requested unregistered tool %q", call.Name) }
+			for _, prerequisite := range spec.RequiresNewUserTurnAfter {
+				if executedTools[prerequisite] || requestedInBatch[prerequisite] {
+					return "", fmt.Errorf("tool %q requires a new user turn after %q; ask the operator to review and confirm the prerequisite result before continuing", call.Name, prerequisite)
+				}
+			}
 		}
 		messages = append(messages, Message{Role: "assistant", ToolCalls: response.ToolCalls})
 		for _, call := range response.ToolCalls {
@@ -116,6 +130,7 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 				return "", fmt.Errorf("tool %q returned invalid output: %w", call.Name, err)
 			}
 			messages = append(messages, Message{Role: "tool", ToolCallID: call.ID, Name: call.Name, Content: output})
+			executedTools[call.Name] = true
 		}
 	}
 	return "", fmt.Errorf("model exceeded maximum of %d tool turns", a.maxTurns)

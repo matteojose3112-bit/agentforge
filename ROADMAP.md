@@ -51,10 +51,10 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 **Goal:** turn the existing CRM pipeline analyzer into a credible, repeatable business workflow that produces useful operational insight—not simply add another generic tool.
 
 ### Phase 1 — Define the workflow and evidence
-- [ ] Define the target user, input format, business questions, and expected report structure.
-- [ ] Create representative synthetic CRM datasets covering healthy, weak, incomplete, and edge-case pipelines.
-- [ ] Define deterministic acceptance criteria for every metric and recommendation.
-- [ ] Document the boundary between calculated facts, model-generated interpretation, and suggested actions.
+- [x] Define the target user, input format, business questions, and expected report structure.
+- [x] Create representative synthetic CRM datasets covering healthy, weak, incomplete, and edge-case pipelines.
+- [x] Define deterministic acceptance criteria for every metric and recommendation.
+- [x] Document the boundary between calculated facts, model-generated interpretation, and suggested actions.
 
 ### Phase 2 — Build the assistant workflow
 - [x] Compose the existing CRM lead-pipeline analyzer into a registered sales operations report tool.
@@ -62,13 +62,24 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Keep recommendations rule-based and tied to observed counts/fields; avoid unsupported causes or forecasts.
 - [x] Keep the report read-only; no CRM writes, emails, or external side effects.
 - [x] Register the capability behind its own default-deny permission (`tool.sales_ops.report`) and retain bounded agent execution.
-- [ ] Add a guided prompt/workflow that helps an operator map their CRM columns and interpret the report.
+- [x] Add bounded CSV inspection that returns headers, missing/non-empty counts, and up to five distinct sample values per column.
+- [x] Document the operator-confirmed mapping sequence and separate inspection/report permissions.
+- [x] Enforce a new user-turn checkpoint between CSV inspection and sales report generation, with tests for same-response blocking.
+- [x] Document that the operator must confirm mappings and re-supply the CSV in the next CLI run.
+- [ ] Improve mapping suggestions with deterministic header/value heuristics and explicit confidence levels.
 
 ### Phase 3 — Evaluate and demonstrate
+- [x] Add synthetic baseline fixtures for healthy, weak, incomplete, and zero-record pipelines, with expected metric summaries documented in `docs/SALES_OPS_EVALUATION.md`.
 - [ ] Add repeatable evaluation fixtures for multiple pipeline shapes, expected metrics, grounded recommendations, malformed input, and permission denial.
 - [x] Add deterministic unit tests for report metrics, recommendation triggers, unavailable win-rate context, schema validity, and invalid input.
+- [x] Add fixture-backed regression tests that execute all four synthetic scenarios and assert pipeline/report metrics plus selected recommendation triggers.
 - [ ] Add tests for the full model-backed workflow using a fake/local provider so CI remains API-cost-free.
-- [ ] Publish a reproducible demo with sample input, command, output, and operator interpretation.
+- [ ] Publish a reproducible CLI demo with sample input, command, output, and operator interpretation.\n- [x] Add a browser-based guided workspace prototype with local CSV inspection, an explicit mapping approval checkpoint, and a deterministic read-only report using synthetic data; clearly label it as a front-end demo, not a live Go runtime integration.
+- [x] Expose the existing Go CSV inspection and sales report tools through bounded, read-only HTTP endpoints with strict JSON decoding, configurable CORS origins, and optional bearer-token protection.
+- [x] Connect the browser workspace to configurable Go API endpoints while retaining an explicit local-only demo mode.
+- [x] Deploy the API on Render Free with a generated bearer-token secret and GitHub Pages CORS allow-list.
+- [x] Verify the live `/healthz` endpoint returns HTTP 200 and unauthenticated `/api/inspect` and `/api/report` requests are rejected with HTTP 401.
+- [ ] Verify authenticated `/api/inspect` and `/api/report` requests with representative CSV payloads through the deployed workspace.
 - [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
 - [ ] Run the live provider smoke test when an API key and a suitable low-cost model are available.
 
@@ -99,14 +110,14 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ---
 
-Last reviewed: 2026-11-06
+Last reviewed: 2026-11-08
 
 ## Current direction
 
 **Implemented baseline:** v0.3.0 local runtime and CRM analysis capabilities.
 
-**Outstanding validation:** live provider-backed model/tool smoke test and release-candidate evidence.
+**Outstanding validation:** authenticated live API data-processing requests, live provider-backed model/tool smoke test, and release-candidate evidence.
 
 **Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, direct/agent-mode examples, explicit guidance that structured tools expect JSON while `echo` accepts plain text, and a quick-start `-version` command that displays version/build metadata. A placeholder-only `.env.example` documents the OpenAI credential variable; the CLI still reads credentials from the process environment and does not auto-load dotenv files. Agent startup now rejects missing keys, untouched placeholders, `Bearer ` prefixes, and whitespace before attempting a provider request; remote key validity remains an API-side check.
 
-**Active development target:** v0.4 AI Sales Operations Assistant, starting with workflow definition, synthetic evaluation datasets, and deterministic acceptance criteria. The immediate objective is a demonstrable, read-only business workflow built on the existing code—not premature persistence or infrastructure.
+**Active development target:** v0.4 AI Sales Operations Assistant. The HTTP API is deployed on Render Free and the workspace is connected to its configurable API boundary. Live checks confirm the service health endpoint responds successfully and both data-processing endpoints enforce bearer authentication. Authenticated live CSV inspection/report requests remain to be verified. The workflow has synthetic evaluation datasets, deterministic acceptance criteria, a runtime-enforced new-turn checkpoint, and a guided workspace—not a generic dashboard. Next priorities are exercising the authenticated live workflow, adding full model-loop tests with a fake provider, and publishing a reproducible CLI demo.

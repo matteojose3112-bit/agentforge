@@ -28,6 +28,8 @@ type ToolDefinition struct {
 	Parameters  json.RawMessage `json:"parameters"`
 	OutputSchema json.RawMessage `json:"output_schema"`
 	Permission  string          `json:"permission"`
+	// RequiresNewUserTurnAfter prevents dependent tools from running in the same Run as prerequisite tools.
+	RequiresNewUserTurnAfter []string `json:"-"`
 }
 
 // ModelRequest is the provider-neutral input to a model.

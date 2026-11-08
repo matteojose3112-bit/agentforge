@@ -1,0 +1,3 @@
+{
+  "csv": "Lead ID,Opportunity Stage,Deal Amount,Lead Source\n001,Qualified,1200,Referral\n002,Closed Won,2500,Google Ads\n003,Proposal,4200,Referral\n004,Closed Lost,900,Website\n"
+}

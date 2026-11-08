@@ -4,6 +4,13 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Deployment and live API verification — 2026-11-08
+- Deployed the Go HTTP API to Render Free in Virginia at https://agentforge-api-s4zx.onrender.com, linked to the feature branch with automatic deploys after CI checks pass.
+- Configured the generated `AGENTFORGE_API_TOKEN` secret and restricted browser CORS to the GitHub Pages origin; no secret is stored in the repository or public frontend.
+- Verified the deployed `/healthz` endpoint returns HTTP 200 with the expected AgentForge health payload.
+- Verified unauthenticated requests to `/api/inspect` and `/api/report` are rejected with HTTP 401.
+- Authenticated POST requests with representative CSV data have not yet been tested against the live deployment; the API's data-processing behavior remains covered by repository tests pending that final live check.
+
 ### Configuration and credential safety
 - Added preflight validation for missing OpenAI credentials, untouched template placeholders, accidental `Bearer ` prefixes, and whitespace; errors explain how to correct the local configuration without exposing the secret.
 - Added provider-constructor and CLI tests for credential validation cases. This validation does not claim to verify remote key validity or permissions.

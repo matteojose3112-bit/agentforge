@@ -236,3 +236,47 @@ func TestAgentDeniesLeadPipelineAnalysisWithoutPermission(t *testing.T) {
 		t.Fatalf("Run() error = %v, want permission denial", err)
 	}
 }
+
+func TestAgentRequiresNewUserTurnBetweenCSVInspectionAndSalesReport(t *testing.T) {
+	csv := "stage,value,source\nQualified,1200,Referral\nWon,2500,Google Ads\n"
+	inspectArgs, err := json.Marshal(map[string]string{"csv": csv})
+	if err != nil { t.Fatal(err) }
+	reportArgs, err := json.Marshal(map[string]any{
+		"csv": csv, "status_column": "stage", "value_column": "value", "source_column": "source",
+		"won_statuses": []string{"Won"}, "lost_statuses": []string{"Lost"},
+	})
+	if err != nil { t.Fatal(err) }
+
+	t.Run("same response is blocked before either tool runs", func(t *testing.T) {
+		provider := &fakeProvider{responses: []agent.ModelResponse{{
+			ToolCalls: []agent.ToolCall{
+				{ID: "inspect-1", Name: "csv_inspect", Arguments: inspectArgs},
+				{ID: "report-1", Name: "sales_ops_report", Arguments: reportArgs},
+			},
+		}}}
+		runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{
+			"tool.csv.inspect": true, "tool.sales_ops.report": true,
+		}, 3, tools.CSVInspect{}, tools.SalesOpsReport{})
+		if err != nil { t.Fatal(err) }
+		_, err = runner.Run(context.Background(), "Inspect this CRM export and prepare a report.")
+		if err == nil || !strings.Contains(err.Error(), "requires a new user turn") {
+			t.Fatalf("Run() error = %v, want confirmation turn boundary", err)
+		}
+		if len(provider.requests) != 1 { t.Fatalf("provider requests = %d, want 1", len(provider.requests)) }
+	})
+
+	t.Run("report is available in a separate confirmed user turn", func(t *testing.T) {
+		provider := &fakeProvider{responses: []agent.ModelResponse{
+			{ToolCalls: []agent.ToolCall{{ID: "report-2", Name: "sales_ops_report", Arguments: reportArgs}}},
+			{Text: "Confirmed mapping report is ready."},
+		}}
+		runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{
+			"tool.csv.inspect": true, "tool.sales_ops.report": true,
+		}, 3, tools.CSVInspect{}, tools.SalesOpsReport{})
+		if err != nil { t.Fatal(err) }
+		result, err := runner.Run(context.Background(), "I confirm stage, value, and source mappings and the Won/Lost labels. Generate the report using this CSV: " + csv)
+		if err != nil || result != "Confirmed mapping report is ready." {
+			t.Fatalf("Run() = %q, %v", result, err)
+		}
+	})
+}
