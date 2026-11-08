@@ -95,7 +95,7 @@ go run ./cmd/agentforge -agent `
 
 Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling, CRM lead-pipeline analysis, and the sales operations report tools.
 
-See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data.
+See the [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md) documents four additional synthetic scenarios and deterministic acceptance criteria.
 
 ## How it works
 
