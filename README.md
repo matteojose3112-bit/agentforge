@@ -4,7 +4,7 @@
 
 > **Live project site:** [AgentForge on GitHub Pages](https://matteojose3112-bit.github.io/agentforge/) · **Repository:** [GitHub](https://github.com/matteojose3112-bit/agentforge)
 
-> **Project status:** v0.4 read-only Sales Operations workflow implemented and API deployed on Render Free. Early-stage developer project; not production-ready. The live model/tool workflow and authenticated API data-processing requests still require end-to-end validation.
+> **Project status:** v0.4 read-only Sales Operations workflow implemented and API deployed on Render Free. Early-stage developer project; not production-ready. The authenticated CSV inspection flow is verified; authenticated report generation and the live model/tool workflow still require end-to-end validation.
 
 AgentForge keeps orchestration in Go and puts model providers behind a small interface. Models can request capabilities, but only tools explicitly registered by the application can execute, and permissions are denied unless explicitly granted.
 
@@ -14,7 +14,7 @@ The v0.3.0 runtime and v0.4 read-only Sales Operations workflow are implemented.
 
 **What is verified:** local tool execution paths, deterministic analysis tools, automated tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls. The Render deployment is live; `/healthz` returns HTTP 200, while unauthenticated requests to `/api/inspect` and `/api/report` return HTTP 401.
 
-**Not yet verified or implemented:** successful authenticated requests to the two deployed data-processing endpoints; a live model/tool cycle against an actual provider account; persisted conversations or task history; durable approval workflows; scheduled/background workflows; and production security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
+**Not yet verified or implemented:** successful authenticated `/api/report` requests against the deployed service; a live model/tool cycle against an actual provider account; persisted conversations or task history; durable approval workflows; scheduled/background workflows; and production security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
 
 ## Why AgentForge
 
