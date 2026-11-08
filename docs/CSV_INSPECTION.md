@@ -41,6 +41,19 @@ For a real export, place the CSV contents in the `csv` field of a local JSON pay
 
 The inspector provides evidence, not an automatic mapping decision. Column mapping remains an operator-confirmed step. The report tool remains read-only and calculates metrics independently of any model-generated explanation.
 
+## Enforced confirmation checkpoint
+
+The runtime enforces a two-turn boundary between inspection and report generation:
+
+- A model response cannot call `csv_inspect` and `sales_ops_report` in the same tool-call batch.
+- If the model inspects the CSV and then attempts the report in a later tool turn within that same agent run, the runtime blocks the report.
+- The assistant must return the proposed mapping to the operator and wait for a new user message.
+- In that next run, the operator should explicitly confirm the status/value/source columns and the exact won/lost labels, and include the CSV again. AgentForge does not persist conversations or CSV contents between CLI runs.
+- Only then may the model call `sales_ops_report`.
+
+This is a real runtime turn boundary, not just a prompt suggestion. It does not verify the semantic truth of a user's confirmation; it ensures the report cannot follow inspection inside the same agent run. The report permission remains separately default-deny.
+
+
 ## Permission boundary
 
 In agent mode, inspection requires the explicit `tool.csv.inspect` permission. Report generation separately requires `tool.sales_ops.report`. Both remain denied by default unless explicitly allow-listed.
