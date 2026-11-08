@@ -15,6 +15,14 @@ go run ./cmd/agentforge -tool sales_ops_report -input-file examples/evaluations/
 
 No model API key or external service is required for these deterministic report runs.
 
+Run the fixture-backed regression tests for all four scenarios:
+
+```bash
+go test ./internal/tools -run TestSalesOpsEvaluationFixtures -v
+```
+
+The test executes each JSON fixture through both the pipeline analyzer and the sales operations report, then checks lead counts, win rate, open pipeline value, data-quality counts, and selected recommendation triggers. The full repository CI additionally runs `go test ./...`, `go vet ./...`, and a CLI build.
+
 ## Scenario inventory
 
 | Fixture | Purpose | Expected pipeline facts |
