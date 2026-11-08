@@ -72,6 +72,26 @@ func TestRejectsUnknownFieldsAndUnapprovedOrigins(t *testing.T) {
 	}
 }
 
+func TestAPIRequiresConfiguredBearerToken(t *testing.T) {
+	server := NewWithToken(nil, "demo-secret")
+	body := `{"csv":"A\\nx"}`
+	request := httptest.NewRequest(http.MethodPost, "/api/inspect", strings.NewReader(body))
+	request.Header.Set("Content-Type", "application/json")
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+	if response.Code != http.StatusUnauthorized {
+		t.Fatalf("expected unauthorized without token, got %d", response.Code)
+	}
+	request = httptest.NewRequest(http.MethodPost, "/api/inspect", strings.NewReader(body))
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer demo-secret")
+	response = httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+	if response.Code != http.StatusOK {
+		t.Fatalf("expected authorized request, got %d: %s", response.Code, response.Body.String())
+	}
+}
+
 func TestRejectsMalformedCSV(t *testing.T) {
 	server := New(nil)
 	request := httptest.NewRequest(http.MethodPost, "/api/inspect", strings.NewReader(`{"csv":"A,B\n1"}`))
