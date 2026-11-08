@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"log"
 	"net/http"
@@ -26,8 +27,9 @@ func main() {
 	signal.Notify(stopped, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-stopped
-		server.SetKeepAlivesEnabled(false)
-		if err := server.Shutdown(shutdownContext()); err != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+		defer cancel()
+		if err := server.Shutdown(ctx); err != nil {
 			log.Printf("graceful shutdown: %v", err)
 		}
 	}()
@@ -44,21 +46,3 @@ func envOr(key, fallback string) string {
 	}
 	return fallback
 }
-
-func shutdownContext() interface{ Done() <-chan struct{} } {
-	// Keep the command dependency-free; the server's own shutdown timeout is
-	// bounded by the platform process termination window.
-	timer := time.NewTimer(8 * time.Second)
-	ch := make(chan struct{})
-	go func() {
-		<-timer.C
-		close(ch)
-	}()
-	return shutdownCtx{done: ch}
-}
-
-type shutdownCtx struct{ done <-chan struct{} }
-func (c shutdownCtx) Deadline() (time.Time, bool) { return time.Time{}, false }
-func (c shutdownCtx) Done() <-chan struct{} { return c.done }
-func (c shutdownCtx) Err() error { return nil }
-func (c shutdownCtx) Value(any) any { return nil }
