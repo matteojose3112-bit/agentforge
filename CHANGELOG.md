@@ -4,6 +4,13 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Documentation reconciliation — 2026-11-08
+- Reconciled the roadmap with the completed v0.4 evaluation fixtures, guided workspace, protected HTTP API, and live authenticated CSV-inspection verification.
+- Corrected the remaining validation gates: authenticated `/api/report` through the deployed workspace and a real provider-backed model/tool cycle are still outstanding.
+- Recorded the successful Go CI and GitHub Pages deployment workflows on commit `b951b78`.
+- Corrected the README links to the Sales Operations evaluation and CSV inspection guides.
+
+
 ### Live workspace integration verification — 2026-11-08
 - Confirmed the deployed GitHub Pages workspace connects to the Render-hosted Go API using the configured bearer token.
 - Successfully ran the sample CRM CSV through the authenticated `/api/inspect` endpoint from the browser workspace; the Go runtime returned the inspection results and the workflow paused at the operator mapping-confirmation checkpoint.
