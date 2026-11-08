@@ -51,10 +51,10 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 **Goal:** turn the existing CRM pipeline analyzer into a credible, repeatable business workflow that produces useful operational insight—not simply add another generic tool.
 
 ### Phase 1 — Define the workflow and evidence
-- [ ] Define the target user, input format, business questions, and expected report structure.
-- [ ] Create representative synthetic CRM datasets covering healthy, weak, incomplete, and edge-case pipelines.
-- [ ] Define deterministic acceptance criteria for every metric and recommendation.
-- [ ] Document the boundary between calculated facts, model-generated interpretation, and suggested actions.
+- [x] Define the target user, input format, business questions, and expected report structure.
+- [x] Create representative synthetic CRM datasets covering healthy, weak, incomplete, and edge-case pipelines.
+- [x] Define deterministic acceptance criteria for every metric and recommendation.
+- [x] Document the boundary between calculated facts, model-generated interpretation, and suggested actions.
 
 ### Phase 2 — Build the assistant workflow
 - [x] Compose the existing CRM lead-pipeline analyzer into a registered sales operations report tool.
@@ -65,6 +65,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [ ] Add a guided prompt/workflow that helps an operator map their CRM columns and interpret the report.
 
 ### Phase 3 — Evaluate and demonstrate
+- [x] Add synthetic baseline fixtures for healthy, weak, incomplete, and zero-record pipelines, with expected metric summaries documented in `docs/SALES_OPS_EVALUATION.md`.
 - [ ] Add repeatable evaluation fixtures for multiple pipeline shapes, expected metrics, grounded recommendations, malformed input, and permission denial.
 - [x] Add deterministic unit tests for report metrics, recommendation triggers, unavailable win-rate context, schema validity, and invalid input.
 - [ ] Add tests for the full model-backed workflow using a fake/local provider so CI remains API-cost-free.
@@ -99,7 +100,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ---
 
-Last reviewed: 2026-11-06
+Last reviewed: 2026-11-08
 
 ## Current direction
 
