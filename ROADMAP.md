@@ -74,7 +74,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Add deterministic unit tests for report metrics, recommendation triggers, unavailable win-rate context, schema validity, and invalid input.
 - [x] Add fixture-backed regression tests that execute all four synthetic scenarios and assert pipeline/report metrics plus selected recommendation triggers.
 - [ ] Add tests for the full model-backed workflow using a fake/local provider so CI remains API-cost-free.
-- [ ] Publish a reproducible demo with sample input, command, output, and operator interpretation.
+- [ ] Publish a reproducible CLI demo with sample input, command, output, and operator interpretation.\n- [x] Add a browser-based guided workspace prototype with local CSV inspection, an explicit mapping approval checkpoint, and a deterministic read-only report using synthetic data; clearly label it as a front-end demo, not a live Go runtime integration.
 - [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
 - [ ] Run the live provider smoke test when an API key and a suitable low-cost model are available.
 
@@ -115,4 +115,4 @@ Last reviewed: 2026-11-08
 
 **Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, direct/agent-mode examples, explicit guidance that structured tools expect JSON while `echo` accepts plain text, and a quick-start `-version` command that displays version/build metadata. A placeholder-only `.env.example` documents the OpenAI credential variable; the CLI still reads credentials from the process environment and does not auto-load dotenv files. Agent startup now rejects missing keys, untouched placeholders, `Bearer ` prefixes, and whitespace before attempting a provider request; remote key validity remains an API-side check.
 
-**Active development target:** v0.4 AI Sales Operations Assistant, starting with workflow definition, synthetic evaluation datasets, and deterministic acceptance criteria. The immediate objective is a demonstrable, read-only business workflow built on the existing code—not premature persistence or infrastructure.
+**Active development target:** v0.4 AI Sales Operations Assistant. The workflow now has synthetic evaluation datasets, deterministic acceptance criteria, a runtime-enforced confirmation checkpoint, and a browser-based workspace prototype. The workspace is a guided agent experience—not a generic dashboard—and currently simulates the workflow locally rather than invoking the Go runtime or a live model. Next priorities are connecting the interface to a real execution boundary, adding full model-loop tests with a fake provider, and publishing a reproducible CLI demo.
