@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"crypto/subtle"
 	"strings"
 	"time"
 
@@ -16,6 +17,7 @@ const maxRequestBytes = 2 << 20
 
 type Server struct {
 	allowedOrigins map[string]struct{}
+	apiToken       string
 	mux            *http.ServeMux
 }
 
@@ -32,14 +34,17 @@ type reportRequest struct {
 	LostStatuses []string `json:"lost_statuses"`
 }
 
-func New(allowedOrigins []string) *Server {
+func New(allowedOrigins []string) *Server { return NewWithToken(allowedOrigins, "") }
+
+// NewWithToken protects data-processing endpoints with an optional bearer token.
+func NewWithToken(allowedOrigins []string, apiToken string) *Server {
 	origins := make(map[string]struct{}, len(allowedOrigins))
 	for _, origin := range allowedOrigins {
 		if origin = strings.TrimSpace(origin); origin != "" {
 			origins[origin] = struct{}{}
 		}
 	}
-	s := &Server{allowedOrigins: origins, mux: http.NewServeMux()}
+	s := &Server{allowedOrigins: origins, apiToken: strings.TrimSpace(apiToken), mux: http.NewServeMux()}
 	s.mux.HandleFunc("/healthz", s.health)
 	s.mux.HandleFunc("/api/inspect", s.inspect)
 	s.mux.HandleFunc("/api/report", s.report)
@@ -61,6 +66,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusNoContent)
 		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/api/") && s.apiToken != "" {
+		provided := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+		if subtle.ConstantTimeCompare([]byte(provided), []byte(s.apiToken)) != 1 {
+			writeError(w, http.StatusUnauthorized, errors.New("valid bearer token required"))
+			return
+		}
 	}
 	s.mux.ServeHTTP(w, r)
 }
