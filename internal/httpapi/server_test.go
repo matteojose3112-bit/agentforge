@@ -29,7 +29,7 @@ func TestInspectExecutesCSVInspector(t *testing.T) {
 		t.Fatalf("unexpected status %d: %s", response.Code, response.Body.String())
 	}
 	var result struct {
-		Rows    int `json:"rows"`
+		Rows int `json:"rows"`
 		Columns []struct { Name string `json:"name"` } `json:"columns"`
 	}
 	if err := json.Unmarshal(response.Body.Bytes(), &result); err != nil {
@@ -42,13 +42,65 @@ func TestInspectExecutesCSVInspector(t *testing.T) {
 
 func TestReportExecutesSalesOpsTool(t *testing.T) {
 	server := New(nil)
-	body := []byte(`{"csv":"Stage,Value,Source\nClosed Won,100,Referral\nOpen,50,Web\n","status_column":"Stage","value_column":"Value","source_column":"Source","won_statuses":["Closed Won"],"lost_statuses":["Closed Lost"]}`)
+	body := []byte(`{"csv":"Stage,Value,Source\nClosed Won,100,Referral\nClosed Lost,25,Web\nOpen,50,Partner\n","status_column":"Stage","value_column":"Value","source_column":"Source","won_statuses":["Closed Won"],"lost_statuses":["Closed Lost"]}`)
 	response := httptest.NewRecorder()
 	request := httptest.NewRequest(http.MethodPost, "/api/report", bytes.NewReader(body))
 	request.Header.Set("Content-Type", "application/json")
 	server.ServeHTTP(response, request)
-	if response.Code != http.StatusOK || !strings.Contains(response.Body.String(), `"open_pipeline_value":50`) {
+	if response.Code != http.StatusOK {
 		t.Fatalf("unexpected report response: %d %s", response.Code, response.Body.String())
+	}
+
+	var result struct {
+		ReportTitle string `json:"report_title"`
+		TotalLeads int `json:"total_leads"`
+		ClosedLeads int `json:"closed_leads"`
+		OpenLeads int `json:"open_leads"`
+		WinRatePercent float64 `json:"win_rate_percent"`
+		OpenPipelineValue float64 `json:"open_pipeline_value"`
+		MissingStatuses int `json:"missing_statuses"`
+		MissingValues int `json:"missing_values"`
+		MissingSources int `json:"missing_sources"`
+		Observations []string `json:"observations"`
+		RecommendedActions []string `json:"recommended_actions"`
+		Limitations []string `json:"limitations"`
+	}
+	if err := json.Unmarshal(response.Body.Bytes(), &result); err != nil {
+		t.Fatal(err)
+	}
+	if result.ReportTitle == "" || result.TotalLeads != 3 || result.ClosedLeads != 2 || result.OpenLeads != 1 {
+		t.Fatalf("unexpected report counts/title: %+v", result)
+	}
+	if result.WinRatePercent != 50 || result.OpenPipelineValue != 50 {
+		t.Fatalf("unexpected report metrics: %+v", result)
+	}
+	if result.MissingStatuses != 0 || result.MissingValues != 0 || result.MissingSources != 0 {
+		t.Fatalf("unexpected data-quality counts: %+v", result)
+	}
+	if len(result.Observations) == 0 || len(result.RecommendedActions) == 0 || len(result.Limitations) == 0 {
+		t.Fatalf("report is missing explanatory sections: %+v", result)
+	}
+}
+
+func TestReportRequiresConfiguredBearerToken(t *testing.T) {
+	server := NewWithToken(nil, "demo-secret")
+	body := `{"csv":"Stage,Value\nOpen,50\n","status_column":"Stage","value_column":"Value","source_column":"","won_statuses":["Won"],"lost_statuses":["Lost"]}`
+
+	request := httptest.NewRequest(http.MethodPost, "/api/report", strings.NewReader(body))
+	request.Header.Set("Content-Type", "application/json")
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+	if response.Code != http.StatusUnauthorized {
+		t.Fatalf("expected report request without token to be unauthorized, got %d: %s", response.Code, response.Body.String())
+	}
+
+	request = httptest.NewRequest(http.MethodPost, "/api/report", strings.NewReader(body))
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer demo-secret")
+	response = httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+	if response.Code != http.StatusOK {
+		t.Fatalf("expected authenticated report request to succeed, got %d: %s", response.Code, response.Body.String())
 	}
 }
 

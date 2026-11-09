@@ -4,17 +4,17 @@
 
 > **Live project site:** [AgentForge on GitHub Pages](https://matteojose3112-bit.github.io/agentforge/) · **Repository:** [GitHub](https://github.com/matteojose3112-bit/agentforge)
 
-> **Project status:** v0.4 read-only Sales Operations workflow implemented and API deployed on Render Free. Early-stage developer project; not production-ready. The authenticated CSV inspection flow is verified; authenticated report generation and the live model/tool workflow still require end-to-end validation.
+> **Project status:** v0.4 read-only Sales Operations workflow implemented and API deployed on Render Free. Early-stage developer project; not production-ready. Authenticated CSV inspection and sales report generation are verified end to end through the deployed workspace; the live model/tool workflow still requires validation.
 
 AgentForge keeps orchestration in Go and puts model providers behind a small interface. Models can request capabilities, but only tools explicitly registered by the application can execute, and permissions are denied unless explicitly granted.
 
 ## Current project status
 
-The v0.3.0 runtime and v0.4 read-only Sales Operations workflow are implemented. The guided workspace is connected to a deployed Go HTTP API on Render Free. The authenticated CSV inspection flow has now been exercised successfully from the GitHub Pages workspace against the live Go runtime. The authenticated sales report request and a live model/tool cycle remain validation items.
+The v0.3.0 runtime and v0.4 read-only Sales Operations workflow are implemented. The guided workspace is connected to a deployed Go HTTP API on Render Free. Both authenticated CSV inspection and sales report generation have now been exercised successfully from the GitHub Pages workspace against the live Go runtime. A live model/tool cycle remains a validation item.
 
 **What is verified:** local tool execution paths, deterministic analysis tools, automated tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls. The Render deployment is live; `/healthz` returns HTTP 200, while unauthenticated requests to `/api/inspect` and `/api/report` return HTTP 401.
 
-**Not yet verified or implemented:** successful authenticated `/api/report` requests against the deployed service; a live model/tool cycle against an actual provider account; persisted conversations or task history; durable approval workflows; scheduled/background workflows; and production security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
+**Not yet verified or implemented:** a live model/tool cycle against an actual provider account; persisted conversations or task history; durable approval workflows; scheduled/background workflows; and production security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
 
 ## Why AgentForge
 
@@ -205,6 +205,6 @@ Keep changes small, typed, testable, and explicit about side effects. See [contr
 
 ## Documentation review — 2026-11-08
 
-The v0.3 runtime foundation and v0.4 read-only Sales Operations workflow are implemented. The project includes deterministic CRM analysis, synthetic evaluation fixtures, a guided CSV workspace, a Go HTTP API, unit tests, and CI. The API is deployed at https://agentforge-api-s4zx.onrender.com on Render Free. Live verification confirms `/healthz` returns HTTP 200 and both protected data-processing routes reject unauthenticated requests with HTTP 401. Authenticated `/api/inspect` has been successfully exercised from the deployed workspace using the sample CRM CSV. The authenticated `/api/report` flow and a real provider-backed model/tool cycle remain outstanding.
+The v0.3 runtime foundation and v0.4 read-only Sales Operations workflow are implemented. The project includes deterministic CRM analysis, synthetic evaluation fixtures, a guided CSV workspace, a Go HTTP API, unit tests, and CI. The API is deployed at https://agentforge-api-s4zx.onrender.com on Render Free. Live verification confirms `/healthz` returns HTTP 200 and both protected data-processing routes reject unauthenticated requests with HTTP 401. Authenticated `/api/inspect` and `/api/report` have both been successfully exercised from the deployed workspace using the sample CRM workflow. A real provider-backed model/tool cycle remains outstanding.
 
-The workspace is designed as an operator-guided AI workspace, not another dashboard. Its live authenticated CSV inspection path has been verified end to end; the report-generation path is the next integration check. It can use the deployed API after the operator supplies the bearer token in the connection panel. The API remains read-only: it inspects CSVs and generates deterministic reports without CRM writes, outbound messages, or other external side effects. Persistence, scheduling, background workers, and broader production security work remain out of scope until justified by usage.
+The workspace is designed as an operator-guided AI workspace, not another dashboard. Its live authenticated CSV inspection and report-generation paths have both been verified end to end. It can use the deployed API after the operator supplies the bearer token in the connection panel. The API remains read-only: it inspects CSVs and generates deterministic reports without CRM writes, outbound messages, or other external side effects. Persistence, scheduling, background workers, and broader production security work remain out of scope until justified by usage.
