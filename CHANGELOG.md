@@ -4,6 +4,13 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Live report workflow verification — 2026-11-09
+- Successfully generated the sales operations report from the deployed GitHub Pages workspace through the authenticated Render Go API after the operator-confirmed mapping checkpoint.
+- The live v0.4 browser workflow now covers authenticated CSV inspection, explicit mapping approval, and authenticated read-only report generation.
+- Added API contract tests for the complete report response and bearer-token enforcement on `/api/report`.
+- The live provider-backed model/tool smoke test remains outstanding; no model-driven execution is claimed.
+
+
 ### Live workspace integration verification — 2026-11-08
 - Confirmed the deployed GitHub Pages workspace connects to the Render-hosted Go API using the configured bearer token.
 - Successfully ran the sample CRM CSV through the authenticated `/api/inspect` endpoint from the browser workspace; the Go runtime returned the inspection results and the workflow paused at the operator mapping-confirmation checkpoint.
