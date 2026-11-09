@@ -46,7 +46,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [ ] Record provider/model/date and outcome of the live smoke test; do not publish credentials or sensitive output.
 - [ ] Tag a release candidate only after the live validation gate is complete.
 
-## v0.4 — AI Sales Operations Assistant (implemented baseline; live report validation outstanding)
+## v0.4 — AI Sales Operations Assistant (implemented; live workspace workflow verified)
 
 **Goal:** turn the existing CRM pipeline analyzer into a credible, repeatable business workflow that produces useful operational insight—not simply add another generic tool.
 
@@ -80,7 +80,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Deploy the API on Render Free with a generated bearer-token secret and GitHub Pages CORS allow-list.
 - [x] Verify the live `/healthz` endpoint returns HTTP 200 and unauthenticated `/api/inspect` and `/api/report` requests are rejected with HTTP 401.
 - [x] Verify authenticated `/api/inspect` requests with the sample CRM CSV through the deployed GitHub Pages workspace and live Render Go API.
-- [ ] Verify authenticated `/api/report` requests with representative CSV payloads through the deployed workspace.
+- [x] Verify authenticated `/api/report` generation through the deployed GitHub Pages workspace and live Render Go API.
 - [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
 - [ ] Run the live provider smoke test when an API key and a suitable low-cost model are available.
 
@@ -111,14 +111,14 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ---
 
-Last reviewed: 2026-11-08
+Last reviewed: 2026-11-09
 
 ## Current direction
 
 **Implemented baseline:** v0.3.0 local runtime and CRM analysis capabilities.
 
-**Outstanding validation:** authenticated live API data-processing requests, live provider-backed model/tool smoke test, and release-candidate evidence.
+**Outstanding validation:** live provider-backed model/tool smoke test and release-candidate evidence.
 
 **Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, direct/agent-mode examples, explicit guidance that structured tools expect JSON while `echo` accepts plain text, and a quick-start `-version` command that displays version/build metadata. A placeholder-only `.env.example` documents the OpenAI credential variable; the CLI still reads credentials from the process environment and does not auto-load dotenv files. Agent startup now rejects missing keys, untouched placeholders, `Bearer ` prefixes, and whitespace before attempting a provider request; remote key validity remains an API-side check.
 
-**Active development target:** v0.4 AI Sales Operations Assistant. The HTTP API is deployed on Render Free, tracks `main`, and the workspace is connected to its configurable API boundary. Live checks confirm the service health endpoint responds successfully, both data-processing endpoints enforce bearer authentication, and authenticated sample CSV inspection succeeds from the browser workspace. Authenticated report generation remains the next live validation step. The workflow has synthetic evaluation datasets, deterministic acceptance criteria, a runtime-enforced new-turn checkpoint, and a guided workspace—not a generic dashboard. Next priorities are verifying authenticated report generation, adding full model-loop tests with a fake provider, and publishing a reproducible CLI demo.
+**Active development target:** v0.4 AI Sales Operations Assistant. The HTTP API is deployed on Render Free, tracks `main`, and the workspace is connected to its configurable API boundary. Live checks confirm the service health endpoint responds successfully, both data-processing endpoints enforce bearer authentication, and authenticated sample CSV inspection and report generation both succeed from the browser workspace. The workflow has synthetic evaluation datasets, deterministic acceptance criteria, a runtime-enforced new-turn checkpoint, and a guided workspace—not a generic dashboard. Next priorities are adding full model-loop tests with a fake provider and publishing a reproducible CLI demo.
