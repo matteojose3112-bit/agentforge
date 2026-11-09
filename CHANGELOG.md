@@ -4,10 +4,12 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
-### Live report workflow verification — 2026-11-09
+### Live report workflow verification and API contract hardening — 2026-11-09
 - Successfully generated the sales operations report from the deployed GitHub Pages workspace through the authenticated Render Go API after the operator-confirmed mapping checkpoint.
 - The live v0.4 browser workflow now covers authenticated CSV inspection, explicit mapping approval, and authenticated read-only report generation.
-- Added API contract tests for the complete report response and bearer-token enforcement on `/api/report`.
+- Merged PR #10 (`1442902`) to `main`, adding stronger `/api/report` contract assertions for report title, lead counts, win rate, open pipeline value, missing-data counts, observations, recommended actions, and limitations.
+- Added `TestReportRequiresConfiguredBearerToken` to verify unauthenticated `/api/report` requests return HTTP 401 and configured Bearer authentication succeeds.
+- Latest pre-merge CI checks passed, including Go tests, workspace JavaScript syntax validation, `go vet`, CLI build, and API build. Post-merge workflow runs were not independently confirmed in this documentation update.
 - The live provider-backed model/tool smoke test remains outstanding; no model-driven execution is claimed.
 
 
