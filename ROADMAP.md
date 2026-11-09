@@ -74,7 +74,8 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Add deterministic unit tests for report metrics, recommendation triggers, unavailable win-rate context, schema validity, and invalid input.
 - [x] Add fixture-backed regression tests that execute all four synthetic scenarios and assert pipeline/report metrics plus selected recommendation triggers.
 - [ ] Add tests for the full model-backed workflow using a fake/local provider so CI remains API-cost-free.
-- [ ] Publish a reproducible CLI demo with sample input, command, output, and operator interpretation.\n- [x] Add a browser-based guided workspace prototype with local CSV inspection, an explicit mapping approval checkpoint, and a deterministic read-only report using synthetic data; clearly label it as a front-end demo, not a live Go runtime integration.
+- [ ] Publish a reproducible CLI demo with sample input, command, output, and operator interpretation.
+- [x] Add a browser-based guided workspace prototype with local CSV inspection, an explicit mapping approval checkpoint, and a deterministic read-only report using synthetic data; clearly label it as a front-end demo, not a live Go runtime integration.
 - [x] Expose the existing Go CSV inspection and sales report tools through bounded, read-only HTTP endpoints with strict JSON decoding, configurable CORS origins, and optional bearer-token protection.
 - [x] Connect the browser workspace to configurable Go API endpoints while retaining an explicit local-only demo mode.
 - [x] Deploy the API on Render Free with a generated bearer-token secret and GitHub Pages CORS allow-list.
