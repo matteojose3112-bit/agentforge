@@ -98,7 +98,7 @@ go run ./cmd/agentforge -agent `
 
 Agent mode requires an explicit `-model` value supported by your OpenAI API account; no unverified default model is assumed. Model API usage may incur charges. Tool permissions are denied by default; grant only the exact permission strings required. Agent mode exposes local echo, text analysis, CSV profiling and inspection, CRM lead-pipeline analysis, and the sales operations report tools. CSV inspection and report generation require separate permissions; after inspection, the runtime blocks report generation until a new user turn.
 
-Live API: [AgentForge API on Render](https://agentforge-api-s4zx.onrender.com) · Health check: [ `/healthz` ](https://agentforge-api-s4zx.onrender.com/healthz). The health route is public; `/api/inspect` and `/api/report` require the configured bearer token. See the [workspace API guide](docs/API.md) for endpoints, local startup, CORS configuration, and deployment boundaries. The [step-by-step demo guide](docs/DEMO.md) for a no-key local check, model-backed walkthrough, CLI flags, and permission-boundary test. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md and [the guided CSV inspection workflow](docs/CSV_INSPECTION.md)) documents four additional synthetic scenarios and deterministic acceptance criteria.
+Live API: [AgentForge API on Render](https://agentforge-api-s4zx.onrender.com) · Health check: [ `/healthz` ](https://agentforge-api-s4zx.onrender.com/healthz). The health route is public; `/api/inspect` and `/api/report` require the configured bearer token. See the [workspace API guide](docs/API.md) for endpoints, local startup, CORS configuration, and deployment boundaries. The [step-by-step demo guide](docs/DEMO.md) covers general CLI setup and the optional model-backed walkthrough. The new [reproducible v0.4 CLI demo](docs/CLI_DEMO.md) runs the four synthetic Sales Operations fixtures locally without an API key or model charges. The [CRM lead pipeline case study](docs/PORTFOLIO.md) is a reproducible business-facing example using synthetic data. The [Sales Operations evaluation set](docs/SALES_OPS_EVALUATION.md and [the guided CSV inspection workflow](docs/CSV_INSPECTION.md)) documents four additional synthetic scenarios and deterministic acceptance criteria.
 
 ## How it works
 
@@ -213,3 +213,8 @@ The workspace is designed as an operator-guided AI workspace, not another dashbo
 ## Model-loop regression coverage — 2026-11-10
 
 The fake-provider tests now exercise the v0.4 agent workflow without contacting a paid model API: CSV inspection and sales report tool calls, schema-validated tool-result handoff into the next model request, final assistant responses, deterministic report metrics and narrative sections, and default-deny report permission behavior. These tests validate the runtime contract; they do not replace the separately outstanding live provider-backed smoke test.
+
+
+## Reproducible CLI demonstration — 2026-11-10
+
+Added [docs/CLI_DEMO.md](docs/CLI_DEMO.md), a no-key walkthrough that builds and tests the Go CLI, generates a report from the healthy synthetic CRM fixture, compares weak/incomplete/edge-case fixtures, and optionally inspects CSV input before a separately confirmed report run. Expected baseline metrics and the synthetic-data/read-only boundaries are documented. This demonstrates deterministic local tool execution, not a live provider-backed model cycle.
