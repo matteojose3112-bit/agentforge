@@ -283,7 +283,7 @@ func TestAgentRequiresNewUserTurnBetweenCSVInspectionAndSalesReport(t *testing.T
 
 
 func TestAgentCompletesCSVInspectionModelToolCycle(t *testing.T) {
-	csvInput := "Lead ID,Stage,Amount\\n001,Qualified,1200\\n002,Won,2500\\n"
+	csvInput := "Lead ID,Stage,Amount\n001,Qualified,1200\n002,Won,2500\n"
 	arguments, err := json.Marshal(map[string]string{"csv": csvInput})
 	if err != nil {
 		t.Fatal(err)
@@ -328,7 +328,7 @@ func TestAgentCompletesCSVInspectionModelToolCycle(t *testing.T) {
 }
 
 func TestAgentCompletesSalesOpsReportModelToolCycle(t *testing.T) {
-	csvInput := "stage,value,source\\nQualified,1200,Referral\\nWon,2500,Google Ads\\nLost,900,Website\\n"
+	csvInput := "stage,value,source\nQualified,1200,Referral\nWon,2500,Google Ads\nLost,900,Website\n"
 	arguments, err := json.Marshal(map[string]any{
 		"csv": csvInput,
 		"status_column": "stage",
@@ -384,7 +384,7 @@ func TestAgentCompletesSalesOpsReportModelToolCycle(t *testing.T) {
 
 func TestAgentDeniesSalesOpsReportWithoutPermission(t *testing.T) {
 	arguments, err := json.Marshal(map[string]any{
-		"csv": "stage,value,source\\nWon,100,Referral\\n",
+		"csv": "stage,value,source\nWon,100,Referral\n",
 		"status_column": "stage",
 		"value_column": "value",
 		"source_column": "source",
