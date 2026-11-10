@@ -4,6 +4,13 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Fake-provider model-loop regression coverage — 2026-11-10
+- Added end-to-end fake-provider tests for the CSV inspection and sales operations report tool cycles, including tool-call/result linkage and final assistant responses.
+- Asserted deterministic sales report metrics and required observations, recommended actions, and limitations are handed back to the provider as tool output.
+- Added explicit default-deny coverage for the sales operations report permission; these tests require no API key or paid model request.
+- The live provider-backed model/tool smoke test, reproducible CLI demo, and portfolio screenshots remain outstanding.
+
+
 ### Live report workflow verification and API contract hardening — 2026-11-09
 - Successfully generated the sales operations report from the deployed GitHub Pages workspace through the authenticated Render Go API after the operator-confirmed mapping checkpoint.
 - The live v0.4 browser workflow now covers authenticated CSV inspection, explicit mapping approval, and authenticated read-only report generation.

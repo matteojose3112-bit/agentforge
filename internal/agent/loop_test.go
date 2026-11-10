@@ -280,3 +280,131 @@ func TestAgentRequiresNewUserTurnBetweenCSVInspectionAndSalesReport(t *testing.T
 		}
 	})
 }
+
+
+func TestAgentCompletesCSVInspectionModelToolCycle(t *testing.T) {
+	csvInput := "Lead ID,Stage,Amount\n001,Qualified,1200\n002,Won,2500\n"
+	arguments, err := json.Marshal(map[string]string{"csv": csvInput})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "inspect-cycle-1", Name: "csv_inspect", Arguments: arguments}}},
+		{Text: "The CSV has two records and the Stage and Amount columns are populated."},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{
+		"tool.csv.inspect": true,
+	}, 3, tools.CSVInspect{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := runner.Run(context.Background(), "Inspect this CRM export.")
+	if err != nil || result != "The CSV has two records and the Stage and Amount columns are populated." {
+		t.Fatalf("Run() = %q, %v", result, err)
+	}
+	if len(provider.requests) != 2 {
+		t.Fatalf("provider requests = %d, want 2", len(provider.requests))
+	}
+	second := provider.requests[1]
+	if len(second.Messages) != 3 || second.Messages[1].Role != "assistant" || second.Messages[2].Role != "tool" {
+		t.Fatalf("follow-up messages = %#v, want user, assistant tool call, tool result", second.Messages)
+	}
+	if second.Messages[2].ToolCallID != "inspect-cycle-1" || second.Messages[2].Name != "csv_inspect" {
+		t.Fatalf("tool result linkage = %#v", second.Messages[2])
+	}
+	var inspection struct {
+		Rows int `json:"rows"`
+		Columns []struct {
+			Name string `json:"name"`
+			MissingCount int `json:"missing_count"`
+		} `json:"columns"`
+	}
+	if err := json.Unmarshal([]byte(second.Messages[2].Content), &inspection); err != nil {
+		t.Fatal(err)
+	}
+	if inspection.Rows != 2 || len(inspection.Columns) != 3 || inspection.Columns[1].Name != "Stage" || inspection.Columns[1].MissingCount != 0 {
+		t.Fatalf("unexpected inspection evidence: %+v", inspection)
+	}
+}
+
+func TestAgentCompletesSalesOpsReportModelToolCycle(t *testing.T) {
+	csvInput := "stage,value,source\nQualified,1200,Referral\nWon,2500,Google Ads\nLost,900,Website\n"
+	arguments, err := json.Marshal(map[string]any{
+		"csv": csvInput,
+		"status_column": "stage",
+		"value_column": "value",
+		"source_column": "source",
+		"won_statuses": []string{"Won"},
+		"lost_statuses": []string{"Lost"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "report-cycle-1", Name: "sales_ops_report", Arguments: arguments}}},
+		{Text: "The snapshot contains three leads, a 50% win rate, and 1,200 in open pipeline value."},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{
+		"tool.sales_ops.report": true,
+	}, 3, tools.SalesOpsReport{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := runner.Run(context.Background(), "Generate a read-only sales operations report from the confirmed CRM mappings.")
+	if err != nil || result != "The snapshot contains three leads, a 50% win rate, and 1,200 in open pipeline value." {
+		t.Fatalf("Run() = %q, %v", result, err)
+	}
+	if len(provider.requests) != 2 {
+		t.Fatalf("provider requests = %d, want 2", len(provider.requests))
+	}
+	second := provider.requests[1]
+	if len(second.Messages) != 3 || second.Messages[2].Role != "tool" || second.Messages[2].ToolCallID != "report-cycle-1" {
+		t.Fatalf("follow-up messages = %#v, want the report tool result linked to its call", second.Messages)
+	}
+	var report struct {
+		TotalLeads int `json:"total_leads"`
+		ClosedLeads int `json:"closed_leads"`
+		OpenLeads int `json:"open_leads"`
+		WinRatePercent float64 `json:"win_rate_percent"`
+		OpenPipelineValue float64 `json:"open_pipeline_value"`
+		Observations []string `json:"observations"`
+		RecommendedActions []string `json:"recommended_actions"`
+		Limitations []string `json:"limitations"`
+	}
+	if err := json.Unmarshal([]byte(second.Messages[2].Content), &report); err != nil {
+		t.Fatal(err)
+	}
+	if report.TotalLeads != 3 || report.ClosedLeads != 2 || report.OpenLeads != 1 || report.WinRatePercent != 50 || report.OpenPipelineValue != 1200 {
+		t.Fatalf("unexpected report metrics: %+v", report)
+	}
+	if len(report.Observations) == 0 || len(report.RecommendedActions) == 0 || len(report.Limitations) == 0 {
+		t.Fatalf("report omitted required narrative sections: %+v", report)
+	}
+}
+
+func TestAgentDeniesSalesOpsReportWithoutPermission(t *testing.T) {
+	arguments, err := json.Marshal(map[string]any{
+		"csv": "stage,value,source\nWon,100,Referral\n",
+		"status_column": "stage",
+		"value_column": "value",
+		"source_column": "source",
+		"won_statuses": []string{"Won"},
+		"lost_statuses": []string{"Lost"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &fakeProvider{responses: []agent.ModelResponse{
+		{ToolCalls: []agent.ToolCall{{ID: "report-denied-1", Name: "sales_ops_report", Arguments: arguments}}},
+	}}
+	runner, err := agent.NewAgent(provider, "test-model", agent.AllowListPolicy{}, 2, tools.SalesOpsReport{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := runner.Run(context.Background(), "Generate a sales operations report."); err == nil || !strings.Contains(err.Error(), "permission denied") {
+		t.Fatalf("Run() error = %v, want sales report permission denial", err)
+	}
+	if len(provider.requests) != 1 {
+		t.Fatalf("provider requests = %d, want 1; denied tool must not be followed by another model turn", len(provider.requests))
+	}
+}
