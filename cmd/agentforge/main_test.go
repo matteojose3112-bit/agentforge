@@ -119,7 +119,7 @@ func TestLeadPipelineAnalysisPortfolioFixture(t *testing.T) {
 
 func TestRunPrintsVersionAndBuildMetadata(t *testing.T) {
 	oldVersion, oldCommit, oldBuildDate := version, commit, buildDate
-	version, commit, buildDate = "0.3.0", "abc1234", "2026-11-05T12:00:00Z"
+	version, commit, buildDate = "0.4.0-dev", "abc1234", "2026-11-05T12:00:00Z"
 	defer func() { version, commit, buildDate = oldVersion, oldCommit, oldBuildDate }()
 
 	output, err := os.CreateTemp(t.TempDir(), "output")
@@ -138,7 +138,7 @@ func TestRunPrintsVersionAndBuildMetadata(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, expected := range []string{"AgentForge 0.3.0", "Commit: abc1234", "Built: 2026-11-05T12:00:00Z"} {
+	for _, expected := range []string{"AgentForge 0.4.0-dev", "Commit: abc1234", "Built: 2026-11-05T12:00:00Z"} {
 		if !strings.Contains(string(result), expected) {
 			t.Errorf("version output missing %q: %s", expected, result)
 		}
