@@ -34,6 +34,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Add JSON input-file support and a reproducible synthetic CRM lead-pipeline case study.
 - [x] Add deterministic CRM pipeline metrics with configurable won/lost stages, closed-lead win rate, pipeline values, and stage/source breakdowns.
 - [x] Publish the static GitHub Pages project site from the repository's `/docs` directory.
+- [x] Add a manual-only GitHub Actions workflow for a bounded OpenAI `echo` tool smoke test; it requires a repository secret and an explicitly supplied model ID.
 - [ ] Run and record a live provider-backed model/tool smoke test using a locally configured API key.
 
 ### v0.3 validation / release gate
@@ -83,6 +84,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 - [x] Verify authenticated `/api/inspect` requests with the sample CRM CSV through the deployed GitHub Pages workspace and live Render Go API.
 - [x] Verify authenticated `/api/report` generation through the deployed GitHub Pages workspace and live Render Go API.
 - [ ] Capture genuine screenshots or a short recording of the working demo for the portfolio.
+- [x] Prepare a manual-only, echo-permission-only provider smoke-test workflow; no credentials are stored in source.
 - [ ] Run the live provider smoke test when an API key and a suitable low-cost model are available.
 
 ### Phase 4 — Human control and state (only after the workflow proves useful)
@@ -112,7 +114,7 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ---
 
-Last reviewed: 2026-11-12
+Last reviewed: 2026-11-13
 
 ## Current direction
 
@@ -122,4 +124,4 @@ Last reviewed: 2026-11-12
 
 **Recently completed usability polish:** the CLI now has structured help output (`-h`/`-help`), clearer flag descriptions, safety notes, direct/agent-mode examples, explicit guidance that structured tools expect JSON while `echo` accepts plain text, and a quick-start `-version` command that displays version/build metadata. A placeholder-only `.env.example` documents the OpenAI credential variable; the CLI still reads credentials from the process environment and does not auto-load dotenv files. Agent startup now rejects missing keys, untouched placeholders, `Bearer ` prefixes, and whitespace before attempting a provider request; remote key validity remains an API-side check.
 
-**Active development target:** v0.4 AI Sales Operations Assistant. The HTTP API is deployed on Render Free, tracks `main`, and the workspace is connected to its configurable API boundary. Live checks confirm the service health endpoint responds successfully, both data-processing endpoints enforce bearer authentication, and authenticated sample CSV inspection and report generation both succeed from the browser workspace. PR #10 (merged to `main`) strengthened the report API contract tests, including key report metrics, required report sections, and bearer-token enforcement. The workflow has synthetic evaluation datasets, deterministic acceptance criteria, a runtime-enforced new-turn checkpoint, and a guided workspace—not a generic dashboard. Fake-provider model-loop coverage is now implemented for CSV inspection and sales report execution, tool-result handoff, final responses, deterministic report output, and report permission denial. The reproducible no-key CLI demo is now documented in `docs/CLI_DEMO.md`, covering the healthy, weak, incomplete, and edge-case synthetic fixtures with expected baseline metrics. Next priorities are genuine portfolio screenshots or a short recording, followed by the live provider smoke test and release-candidate review.
+**Active development target:** v0.4 AI Sales Operations Assistant. The HTTP API is deployed on Render Free, tracks `main`, and the workspace is connected to its configurable API boundary. Live checks confirm the service health endpoint responds successfully, both data-processing endpoints enforce bearer authentication, and authenticated sample CSV inspection and report generation both succeed from the browser workspace. PR #10 (merged to `main`) strengthened the report API contract tests, including key report metrics, required report sections, and bearer-token enforcement. The workflow has synthetic evaluation datasets, deterministic acceptance criteria, a runtime-enforced new-turn checkpoint, and a guided workspace—not a generic dashboard. Fake-provider model-loop coverage is now implemented for CSV inspection and sales report execution, tool-result handoff, final responses, deterministic report output, and report permission denial. The reproducible no-key CLI demo is now documented in `docs/CLI_DEMO.md`, covering the healthy, weak, incomplete, and edge-case synthetic fixtures with expected baseline metrics. Next priorities are the live provider smoke test (a manual-only workflow is prepared; it still requires `OPENAI_API_KEY` and an explicitly selected supported model), followed by release-candidate review. Portfolio screenshots remain optional evidence work.
