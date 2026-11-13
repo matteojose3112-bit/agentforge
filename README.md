@@ -10,11 +10,11 @@ AgentForge keeps orchestration in Go and puts model providers behind a small int
 
 ## Current project status
 
-The v0.4.0 development runtime and read-only Sales Operations workflow are implemented. The guided workspace is connected to a deployed Go HTTP API on Render Free. Both authenticated CSV inspection and sales report generation have been exercised successfully from the GitHub Pages workspace against the live Go runtime. Fake-provider agent-loop tests exercise CSV inspection and report tool calls, tool-result handoff, final responses, and report-permission denial without paid API calls. A live model/provider cycle remains a separate validation item.
+The v0.4.0 development runtime and read-only Sales Operations workflow are implemented. The guided workspace is connected to a deployed Go HTTP API on Render Free. Both authenticated CSV inspection and sales report generation have been exercised successfully from the GitHub Pages workspace against the live Go runtime. Fake-provider agent-loop tests exercise CSV inspection and report tool calls, tool-result handoff, final responses, and report-permission denial without paid API calls. A manual-only GitHub Actions smoke-test workflow is prepared; the live model/provider cycle remains unverified until the repository secret and a supported model are configured and the workflow passes.
 
 **What is verified:** local tool execution paths, deterministic analysis tools, fake-provider model/tool loop tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls. The Render deployment is live; `/healthz` returns HTTP 200, while unauthenticated requests to `/api/inspect` and `/api/report` return HTTP 401.
 
-**Not yet verified or implemented:** a live model/tool cycle against an actual provider account; persisted conversations or task history; durable approval workflows; scheduled/background workflows; and production security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
+**Not yet verified or implemented:** a live model/tool cycle against an actual provider account (a manual, echo-only workflow is available once `OPENAI_API_KEY` is configured); persisted conversations or task history; durable approval workflows; scheduled/background workflows; and production security readiness. See [ROADMAP.md](ROADMAP.md) for milestone status.
 
 ## Why AgentForge
 
@@ -153,7 +153,7 @@ Go owns orchestration and tool execution. Provider-specific request/response tra
 - Only OpenAI is implemented today; the provider interface is vendor-neutral.
 - Agent mode includes local echo, text analysis, CSV profiling, CRM lead-pipeline analysis, and sales operations reporting tools. Text analysis accepts at most 256 KiB per call; CSV tools accept at most 1 MiB, 10,000 data rows, and 100 columns.
 - Persistent conversation history, durable task storage, human approval workflows, background workers, and production security review are not implemented.
-- CI does not call a paid live model API. The live smoke test remains a local release check.
+- Standard CI does not call a paid live model API. A separate `workflow_dispatch` smoke test can make one controlled OpenAI request using only the local `echo` tool; it requires the `OPENAI_API_KEY` Actions secret and a model ID supplied at dispatch time. Provider usage may incur charges.
 
 ## CLI help
 
