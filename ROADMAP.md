@@ -112,11 +112,11 @@ AgentForge is being developed in small, verifiable milestones. Checkboxes descri
 
 ---
 
-Last reviewed: 2026-11-10
+Last reviewed: 2026-11-12
 
 ## Current direction
 
-**Implemented baseline:** v0.3.0 local runtime and CRM analysis capabilities.
+**Implemented baseline:** v0.4.0 development runtime and read-only Sales Operations workflow.
 
 **Outstanding validation:** genuine portfolio screenshots or a short recording, and the live provider-backed model/tool smoke test before release-candidate evidence.
 
