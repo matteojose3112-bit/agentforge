@@ -1,0 +1,64 @@
+name: Live provider smoke test
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: OpenAI model ID enabled for this API key
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  provider-smoke:
+    name: OpenAI echo tool round-trip
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache: true
+
+      - name: Validate smoke-test configuration
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MODEL: ${{ inputs.model }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Configure the OPENAI_API_KEY repository Actions secret before running this workflow."
+            exit 1
+          fi
+          if [ -z "$MODEL" ]; then
+            echo "::error::A provider-supported model ID is required."
+            exit 1
+          fi
+          echo "Provider credential is configured. Model input is present."
+
+      - name: Run one controlled model-to-echo-tool cycle
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MODEL: ${{ inputs.model }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="AGENTFORGE_SMOKE_ECHO_2026_11"
+          prompt="You must call the echo tool exactly once with the exact plain-text input: $expected. Do not answer from memory or repeat the requested text without using the tool. After receiving the tool result, reply with exactly the tool result and nothing else."
+          timeout 75s go run ./cmd/agentforge \
+            -agent \
+            -model "$MODEL" \
+            -prompt "$prompt" \
+            -allow-permission tool.echo \
+            -timeout 65s > "$RUNNER_TEMP/agentforge-smoke-output.txt"
+          if ! grep -Fqx "$expected" "$RUNNER_TEMP/agentforge-smoke-output.txt"; then
+            echo "::error::The model did not return the expected echo-tool result. Review the run output and provider configuration."
+            cat "$RUNNER_TEMP/agentforge-smoke-output.txt"
+            exit 1
+          fi
+          echo "Live provider smoke test passed: the expected echo round-trip response was returned."

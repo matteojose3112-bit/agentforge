@@ -4,6 +4,11 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Manual live-provider smoke workflow — 2026-11-13
+- Added a manually triggered GitHub Actions workflow that runs one bounded OpenAI Responses API request with only the local `echo` tool permission.
+- Requires `OPENAI_API_KEY` as a repository Actions secret and a provider-supported model ID entered when dispatching; no secret or paid request is used by standard CI.
+- The live provider/tool cycle remains unverified until the workflow is run successfully.
+
 ### Version metadata alignment — 2026-11-12
 - Updated the CLI's default development version to `0.4.0-dev` to distinguish the current v0.4 implementation from the earlier v0.3.0 release.
 - Updated the CLI version regression test and documented `0.4.0` as the intended release-build version; no release tag or published release is implied.
