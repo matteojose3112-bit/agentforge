@@ -4,6 +4,11 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Reproducible CLI demo — 2026-11-10
+- Added `docs/CLI_DEMO.md` with a clean-checkout, no-API-key walkthrough using the real Go CLI and four synthetic Sales Operations fixtures.
+- Documented expected healthy-pipeline metrics, scenario comparison commands, optional CSV inspection, PowerShell equivalents, and the read-only/synthetic-data evidence boundary.
+- Updated the README and roadmap; live provider-backed model execution and portfolio screenshots remain outstanding.
+
 ### Fake-provider model-loop regression coverage — 2026-11-10
 - Added end-to-end fake-provider tests for the CSV inspection and sales operations report tool cycles, including tool-call/result linkage and final assistant responses.
 - Asserted deterministic sales report metrics and required observations, recommended actions, and limitations are handed back to the provider as tool output.
