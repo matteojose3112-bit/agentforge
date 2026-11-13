@@ -10,7 +10,7 @@ AgentForge keeps orchestration in Go and puts model providers behind a small int
 
 ## Current project status
 
-The v0.3.0 runtime and v0.4 read-only Sales Operations workflow are implemented. The guided workspace is connected to a deployed Go HTTP API on Render Free. Both authenticated CSV inspection and sales report generation have been exercised successfully from the GitHub Pages workspace against the live Go runtime. Fake-provider agent-loop tests exercise CSV inspection and report tool calls, tool-result handoff, final responses, and report-permission denial without paid API calls. A live model/provider cycle remains a separate validation item.
+The v0.4.0 development runtime and read-only Sales Operations workflow are implemented. The guided workspace is connected to a deployed Go HTTP API on Render Free. Both authenticated CSV inspection and sales report generation have been exercised successfully from the GitHub Pages workspace against the live Go runtime. Fake-provider agent-loop tests exercise CSV inspection and report tool calls, tool-result handoff, final responses, and report-permission denial without paid API calls. A live model/provider cycle remains a separate validation item.
 
 **What is verified:** local tool execution paths, deterministic analysis tools, fake-provider model/tool loop tests, provider adapter tests using a local HTTP test server, and CI checks that do not require paid model API calls. The Render deployment is live; `/healthz` returns HTTP 200, while unauthenticated requests to `/api/inspect` and `/api/report` return HTTP 401.
 
@@ -180,7 +180,7 @@ The CLI's `-version` flag prints the version, Git commit, and build timestamp. L
 Example release-style build (Linux/macOS):
 
 ```bash
-VERSION=0.3.0
+VERSION=0.4.0
 COMMIT=$(git rev-parse --short HEAD)
 BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 go build -ldflags "-X main.version=$VERSION -X main.commit=$COMMIT -X main.buildDate=$BUILD_DATE" -o agentforge ./cmd/agentforge
@@ -190,7 +190,7 @@ go build -ldflags "-X main.version=$VERSION -X main.commit=$COMMIT -X main.build
 PowerShell:
 
 ```powershell
-$version = "0.3.0"
+$version = "0.4.0"
 $commit = git rev-parse --short HEAD
 $buildDate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 go build -ldflags "-X main.version=$version -X main.commit=$commit -X main.buildDate=$buildDate" -o agentforge.exe ./cmd/agentforge

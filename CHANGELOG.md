@@ -4,6 +4,11 @@ All notable changes to AgentForge are documented here.
 
 ## [Unreleased]
 
+### Version metadata alignment — 2026-11-12
+- Updated the CLI's default development version to `0.4.0-dev` to distinguish the current v0.4 implementation from the earlier v0.3.0 release.
+- Updated the CLI version regression test and documented `0.4.0` as the intended release-build version; no release tag or published release is implied.
+
+
 ### Reproducible CLI demo — 2026-11-10
 - Added `docs/CLI_DEMO.md` with a clean-checkout, no-API-key walkthrough using the real Go CLI and four synthetic Sales Operations fixtures.
 - Documented expected healthy-pipeline metrics, scenario comparison commands, optional CSV inspection, PowerShell equivalents, and the read-only/synthetic-data evidence boundary.
