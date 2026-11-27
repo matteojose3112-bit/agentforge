@@ -186,3 +186,41 @@ func TestRejectsOversizedJSONRequestWith413(t *testing.T) {
 		t.Fatalf("expected HTTP 413 for oversized request, got %d: %s", response.Code, response.Body.String())
 	}
 }
+
+
+func TestReportRejectsOversizedJSONRequestWith413(t *testing.T) {
+	server := New(nil)
+	body := `{"csv":"` + strings.Repeat("a", maxRequestBytes) + `"}`
+	request := httptest.NewRequest(http.MethodPost, "/api/report", strings.NewReader(body))
+	request.Header.Set("Content-Type", "application/json")
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+
+	if response.Code != http.StatusRequestEntityTooLarge {
+		t.Fatalf("expected HTTP 413 for oversized report request, got %d: %s", response.Code, response.Body.String())
+	}
+}
+
+func TestRejectsNonJSONContentTypeSuffix(t *testing.T) {
+	server := New(nil)
+	request := httptest.NewRequest(http.MethodPost, "/api/inspect", strings.NewReader(`{"csv":"A\\nx"}`))
+	request.Header.Set("Content-Type", "application/jsonp")
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+
+	if response.Code != http.StatusBadRequest {
+		t.Fatalf("expected HTTP 400 for non-JSON media type, got %d: %s", response.Code, response.Body.String())
+	}
+}
+
+func TestAcceptsJSONContentTypeWithCharset(t *testing.T) {
+	server := New(nil)
+	request := httptest.NewRequest(http.MethodPost, "/api/inspect", strings.NewReader(`{"csv":"Stage,Value\\nOpen,50\\n"}`))
+	request.Header.Set("Content-Type", "application/json; charset=utf-8")
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+
+	if response.Code != http.StatusOK {
+		t.Fatalf("expected HTTP 200 for JSON with charset, got %d: %s", response.Code, response.Body.String())
+	}
+}
