@@ -172,3 +172,17 @@ func TestRejectsMalformedCSV(t *testing.T) {
 		t.Fatalf("expected invalid CSV response, got %d: %s", response.Code, response.Body.String())
 	}
 }
+
+
+func TestRejectsOversizedJSONRequestWith413(t *testing.T) {
+	server := New(nil)
+	body := `{"csv":"` + strings.Repeat("a", maxRequestBytes) + `"}`
+	request := httptest.NewRequest(http.MethodPost, "/api/inspect", strings.NewReader(body))
+	request.Header.Set("Content-Type", "application/json")
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, request)
+
+	if response.Code != http.StatusRequestEntityTooLarge {
+		t.Fatalf("expected HTTP 413 for oversized request, got %d: %s", response.Code, response.Body.String())
+	}
+}
