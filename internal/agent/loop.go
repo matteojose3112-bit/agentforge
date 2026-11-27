@@ -96,29 +96,38 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 		// Preflight the complete batch so a dependent tool cannot run alongside
 		// its prerequisite in the same model response.
 		requestedInBatch := make(map[string]bool, len(response.ToolCalls))
-		for _, call := range response.ToolCalls { requestedInBatch[call.Name] = true }
 		for _, call := range response.ToolCalls {
+			requestedInBatch[call.Name] = true
+		}
+		seenCallIDs := make(map[string]bool, len(response.ToolCalls))
+		for _, call := range response.ToolCalls {
+			if strings.TrimSpace(call.ID) == "" {
+				return "", fmt.Errorf("tool call for %q is missing an ID", call.Name)
+			}
+			if seenCallIDs[call.ID] {
+				return "", fmt.Errorf("model returned duplicate tool call ID %q", call.ID)
+			}
+			seenCallIDs[call.ID] = true
+
 			spec, exists := a.specs[call.Name]
-			if !exists { return "", fmt.Errorf("model requested unregistered tool %q", call.Name) }
+			if !exists {
+				return "", fmt.Errorf("model requested unregistered tool %q", call.Name)
+			}
 			for _, prerequisite := range spec.RequiresNewUserTurnAfter {
 				if executedTools[prerequisite] || requestedInBatch[prerequisite] {
 					return "", fmt.Errorf("tool %q requires a new user turn after %q; ask the operator to review and confirm the prerequisite result before continuing", call.Name, prerequisite)
 				}
 			}
-		}
-		messages = append(messages, Message{Role: "assistant", ToolCalls: response.ToolCalls})
-		for _, call := range response.ToolCalls {
-			tool, exists := a.tools[call.Name]
-			if !exists {
-				return "", fmt.Errorf("model requested unregistered tool %q", call.Name)
-			}
-			spec := a.specs[call.Name]
 			if a.policy == nil || !a.policy.Allows(ctx, spec.Permission) {
 				return "", fmt.Errorf("permission denied for tool %q (%s)", call.Name, spec.Permission)
 			}
 			if err := ValidateJSON(spec.Parameters, call.Arguments); err != nil {
 				return "", fmt.Errorf("invalid arguments for tool %q: %w", call.Name, err)
 			}
+		}
+		messages = append(messages, Message{Role: "assistant", ToolCalls: response.ToolCalls})
+		for _, call := range response.ToolCalls {
+			tool := a.tools[call.Name]
 			if err := ctx.Err(); err != nil {
 				return "", err
 			}
