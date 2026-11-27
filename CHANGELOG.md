@@ -118,3 +118,10 @@ All notable changes to AgentForge are documented here.
 - Refreshed README and roadmap to match the implemented v0.3.0 Go runtime, OpenAI Responses adapter, schema validation, and default-deny permissions.
 - Reaffirmed the project's early-stage status, explicit tool permissions, and non-production limitations.
 - Clarified the live API smoke test as the immediate next validation step; persistence and human approval remain future work.
+
+
+## Documentation maintenance — 2026-11-27
+
+- Reconciled README and roadmap with completed v0.4 synthetic evaluation, fake-provider model-loop regression coverage, the no-key CLI demo, and authenticated live API report generation.
+- Kept the live provider-backed model/tool smoke test and portfolio screenshots outstanding.
+- Clarified that deployed API workflows remain read-only and production readiness is not claimed.
