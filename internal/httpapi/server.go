@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"mime"
 	"crypto/subtle"
 	"strings"
 	"time"
@@ -110,7 +111,7 @@ func (s *Server) report(w http.ResponseWriter, r *http.Request) {
 	}
 	var request reportRequest
 	if err := decodeRequest(w, r, &request); err != nil {
-		writeError(w, http.StatusBadRequest, err)
+		writeDecodeError(w, err)
 		return
 	}
 	output, err := (tools.SalesOpsReport{}).Execute(r.Context(), mustJSON(request))
@@ -122,8 +123,11 @@ func (s *Server) report(w http.ResponseWriter, r *http.Request) {
 }
 
 func decodeRequest(w http.ResponseWriter, r *http.Request, target any) error {
-	if r.Header.Get("Content-Type") != "" && !strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
-		return errors.New("Content-Type must be application/json")
+	if contentType := r.Header.Get("Content-Type"); contentType != "" {
+		mediaType, _, err := mime.ParseMediaType(contentType)
+		if err != nil || mediaType != "application/json" {
+			return errors.New("Content-Type must be application/json")
+		}
 	}
 	r.Body = http.MaxBytesReader(w, r.Body, maxRequestBytes)
 	decoder := json.NewDecoder(r.Body)
