@@ -92,7 +92,7 @@ func (s *Server) inspect(w http.ResponseWriter, r *http.Request) {
 	}
 	var request inspectRequest
 	if err := decodeRequest(w, r, &request); err != nil {
-		writeError(w, http.StatusBadRequest, err)
+		writeDecodeError(w, err)
 		return
 	}
 	output, err := (tools.CSVInspect{}).Execute(r.Context(), mustJSON(request))
@@ -149,6 +149,15 @@ func mustJSON(value any) string {
 func methodNotAllowed(w http.ResponseWriter) {
 	w.Header().Set("Allow", "GET, POST, OPTIONS")
 	writeError(w, http.StatusMethodNotAllowed, errors.New("method not allowed"))
+}
+
+func writeDecodeError(w http.ResponseWriter, err error) {
+	var maxBytesError *http.MaxBytesError
+	if errors.As(err, &maxBytesError) {
+		writeError(w, http.StatusRequestEntityTooLarge, errors.New("request body exceeds the 2 MiB limit"))
+		return
+	}
+	writeError(w, http.StatusBadRequest, err)
 }
 
 func writeError(w http.ResponseWriter, status int, err error) {
