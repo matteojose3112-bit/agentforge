@@ -218,3 +218,8 @@ The fake-provider tests now exercise the v0.4 agent workflow without contacting 
 ## Reproducible CLI demonstration — 2026-11-10
 
 Added [docs/CLI_DEMO.md](docs/CLI_DEMO.md), a no-key walkthrough that builds and tests the Go CLI, generates a report from the healthy synthetic CRM fixture, compares weak/incomplete/edge-case fixtures, and optionally inspects CSV input before a separately confirmed report run. Expected baseline metrics and the synthetic-data/read-only boundaries are documented. This demonstrates deterministic local tool execution, not a live provider-backed model cycle.
+
+
+## Documentation maintenance — 2026-11-27
+
+The v0.4 workflow status is synchronized with the roadmap: synthetic evaluation fixtures, fake-provider regression coverage, the no-key CLI demo, and authenticated live API inspection/report generation are implemented and verified. The live provider-backed model/tool smoke test and portfolio screenshots remain outstanding. The API remains read-only; production readiness is not claimed.
