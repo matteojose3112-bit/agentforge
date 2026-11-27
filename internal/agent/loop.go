@@ -128,6 +128,7 @@ func (a *Agent) Run(ctx context.Context, prompt string) (string, error) {
 		messages = append(messages, Message{Role: "assistant", ToolCalls: response.ToolCalls})
 		for _, call := range response.ToolCalls {
 			tool := a.tools[call.Name]
+			spec := a.specs[call.Name]
 			if err := ctx.Err(); err != nil {
 				return "", err
 			}
