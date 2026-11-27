@@ -408,3 +408,96 @@ func TestAgentDeniesSalesOpsReportWithoutPermission(t *testing.T) {
 		t.Fatalf("provider requests = %d, want 1; denied tool must not be followed by another model turn", len(provider.requests))
 	}
 }
+
+
+type batchProbeTool struct {
+	name       string
+	permission string
+	calls      *int
+}
+
+func (tool batchProbeTool) Name() string { return tool.name }
+
+func (tool batchProbeTool) Definition() agent.ToolDefinition {
+	return agent.ToolDefinition{
+		Name:       tool.name,
+		Permission: tool.permission,
+		Parameters: json.RawMessage(`{"type":"object","properties":{},"additionalProperties":false}`),
+		OutputSchema: json.RawMessage(`{"type":"object","properties":{"ok":{"type":"boolean"}},"required":["ok"],"additionalProperties":false}`),
+	}
+}
+
+func (tool batchProbeTool) Execute(context.Context, string) (string, error) {
+	*tool.calls++
+	return `{"ok":true}`, nil
+}
+
+func TestAgentPreflightsEntireToolBatchBeforeExecution(t *testing.T) {
+	tests := []struct {
+		name       string
+		secondID   string
+		secondArgs json.RawMessage
+		policy     agent.AllowListPolicy
+		wantError  string
+	}{
+		{
+			name:       "permission denied",
+			secondID:   "call-2",
+			secondArgs: json.RawMessage(`{}`),
+			policy:     agent.AllowListPolicy{"tool.first": true},
+			wantError:  "permission denied",
+		},
+		{
+			name:       "invalid arguments",
+			secondID:   "call-2",
+			secondArgs: json.RawMessage(`{"unexpected":true}`),
+			policy:     agent.AllowListPolicy{"tool.first": true, "tool.second": true},
+			wantError:  "invalid arguments",
+		},
+		{
+			name:       "duplicate call ID",
+			secondID:   "call-1",
+			secondArgs: json.RawMessage(`{}`),
+			policy:     agent.AllowListPolicy{"tool.first": true, "tool.second": true},
+			wantError:  "duplicate tool call ID",
+		},
+		{
+			name:       "missing call ID",
+			secondID:   "",
+			secondArgs: json.RawMessage(`{}`),
+			policy:     agent.AllowListPolicy{"tool.first": true, "tool.second": true},
+			wantError:  "missing an ID",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			firstCalls, secondCalls := 0, 0
+			provider := &fakeProvider{responses: []agent.ModelResponse{{
+				ToolCalls: []agent.ToolCall{
+					{ID: "call-1", Name: "first", Arguments: json.RawMessage(`{}`)},
+					{ID: test.secondID, Name: "second", Arguments: test.secondArgs},
+				},
+			}}}
+			runner, err := agent.NewAgent(
+				provider,
+				"test-model",
+				test.policy,
+				2,
+				batchProbeTool{name: "first", permission: "tool.first", calls: &firstCalls},
+				batchProbeTool{name: "second", permission: "tool.second", calls: &secondCalls},
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			_, err = runner.Run(context.Background(), "run both tools")
+			if err == nil || !strings.Contains(err.Error(), test.wantError) {
+				t.Fatalf("Run() error = %v, want %q", err, test.wantError)
+			}
+			if firstCalls != 0 || secondCalls != 0 {
+				t.Fatalf("batch executed before preflight completed: first=%d second=%d", firstCalls, secondCalls)
+			}
+		})
+	}
+}
